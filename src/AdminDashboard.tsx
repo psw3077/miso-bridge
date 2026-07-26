@@ -1,8 +1,8 @@
 import { FormEvent, useEffect, useState } from "react";
-import { FileText, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users } from "lucide-react";
+import { FileText, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users, Megaphone, MapPin } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 
-type Application = {
+type PartnerApplication = {
   id: string;
   store_name: string;
   owner_name: string;
@@ -15,7 +15,32 @@ type Application = {
   created_at: string;
 };
 
+type PickupApplication = {
+  id: string;
+  store_name: string;
+  owner_name: string;
+  phone: string;
+  address: string;
+  pickup_hours: string | null;
+  benefit_interest: string | null;
+  status?: string;
+  created_at: string;
+};
+
+type AdvertisingInquiry = {
+  id: string;
+  company_name: string;
+  contact_name: string;
+  phone: string;
+  category: string | null;
+  budget: string | null;
+  inquiry: string | null;
+  status?: string;
+  created_at: string;
+};
+
 type Notice = { type: "ok" | "error"; text: string } | null;
+type TableName = "partner_applications" | "pickup_partner_applications" | "advertising_inquiries";
 
 const ADMIN_EMAIL = "psw3077@gmail.com";
 
@@ -23,7 +48,9 @@ export default function AdminDashboard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signedInEmail, setSignedInEmail] = useState<string | null>(null);
-  const [applications, setApplications] = useState<Application[]>([]);
+  const [partners, setPartners] = useState<PartnerApplication[]>([]);
+  const [pickups, setPickups] = useState<PickupApplication[]>([]);
+  const [ads, setAds] = useState<AdvertisingInquiry[]>([]);
   const [notice, setNotice] = useState<Notice>(null);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -36,15 +63,17 @@ export default function AdminDashboard() {
     supabase.auth.getSession().then(({ data }) => {
       const currentEmail = data.session?.user.email ?? null;
       setSignedInEmail(currentEmail);
-      if (currentEmail === ADMIN_EMAIL) void loadApplications();
+      if (currentEmail === ADMIN_EMAIL) void loadAll();
       else setLoading(false);
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       const currentEmail = session?.user.email ?? null;
       setSignedInEmail(currentEmail);
-      if (currentEmail === ADMIN_EMAIL) void loadApplications();
+      if (currentEmail === ADMIN_EMAIL) void loadAll();
       else {
-        setApplications([]);
+        setPartners([]);
+        setPickups([]);
+        setAds([]);
         setLoading(false);
       }
     });
@@ -71,18 +100,30 @@ export default function AdminDashboard() {
   async function logout() {
     if (supabase) await supabase.auth.signOut();
     setSignedInEmail(null);
-    setApplications([]);
+    setPartners([]);
+    setPickups([]);
+    setAds([]);
   }
 
-  async function loadApplications() {
+  async function loadAll() {
     if (!supabase) return;
     setLoading(true);
-    const { data, error } = await supabase
-      .from("partner_applications")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) setNotice({ type: "error", text: `신청 목록 조회 실패: ${error.message}` });
-    else setApplications((data ?? []) as Application[]);
+    setNotice(null);
+
+    const [partnerResult, pickupResult, adResult] = await Promise.all([
+      supabase.from("partner_applications").select("*").order("created_at", { ascending: false }),
+      supabase.from("pickup_partner_applications").select("*").order("created_at", { ascending: false }),
+      supabase.from("advertising_inquiries").select("*").order("created_at", { ascending: false }),
+    ]);
+
+    const errors = [partnerResult.error, pickupResult.error, adResult.error].filter(Boolean);
+    if (errors.length) {
+      setNotice({ type: "error", text: `일부 목록 조회 실패: ${errors.map((x) => x?.message).join(" / ")}` });
+    }
+
+    setPartners((partnerResult.data ?? []) as PartnerApplication[]);
+    setPickups((pickupResult.data ?? []) as PickupApplication[]);
+    setAds((adResult.data ?? []) as AdvertisingInquiry[]);
     setLoading(false);
   }
 
@@ -96,13 +137,13 @@ export default function AdminDashboard() {
     window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   }
 
-  async function changeStatus(id: string, status: string) {
+  async function changeStatus(table: TableName, id: string, status: string) {
     if (!supabase || savingId) return;
     setNotice(null);
     setSavingId(id);
 
     const { data, error } = await supabase
-      .from("partner_applications")
+      .from(table)
       .update({ status })
       .eq("id", id)
       .select("id, status")
@@ -111,15 +152,26 @@ export default function AdminDashboard() {
     if (error) {
       setNotice({ type: "error", text: `상태 변경 실패: ${error.message}` });
     } else if (!data) {
-      setNotice({ type: "error", text: "상태가 저장되지 않았습니다. 관리자 수정 권한을 다시 확인해 주세요." });
-      await loadApplications();
+      setNotice({ type: "error", text: "상태가 저장되지 않았습니다. 관리자 수정 권한을 확인해 주세요." });
+      await loadAll();
     } else {
-      setApplications((items) => items.map((item) => item.id === id ? { ...item, status: data.status } : item));
+      if (table === "partner_applications") setPartners((items) => items.map((item) => item.id === id ? { ...item, status: data.status } : item));
+      if (table === "pickup_partner_applications") setPickups((items) => items.map((item) => item.id === id ? { ...item, status: data.status } : item));
+      if (table === "advertising_inquiries") setAds((items) => items.map((item) => item.id === id ? { ...item, status: data.status } : item));
       setNotice({ type: "ok", text: "처리 상태가 저장되었습니다." });
     }
 
     setSavingId(null);
   }
+
+  const statusSelect = (table: TableName, id: string, value?: string) => (
+    <select disabled={savingId === id} value={value ?? "pending"} onChange={(e) => changeStatus(table, id, e.target.value)}>
+      <option value="pending">대기</option>
+      <option value="approved">승인</option>
+      <option value="hold">보류</option>
+      <option value="rejected">거절</option>
+    </select>
+  );
 
   if (!isSupabaseConfigured) {
     return <main className="admin-shell"><section className="admin-login"><ShieldCheck size={42}/><h1>미소브릿지 관리자</h1><p>Cloudflare의 Supabase 환경변수를 먼저 연결해 주세요.</p><a href="/">홈으로 돌아가기</a></section></main>;
@@ -129,7 +181,7 @@ export default function AdminDashboard() {
     return <main className="admin-shell">
       <section className="admin-login">
         <ShieldCheck size={42}/><span>MISO BRIDGE ADMIN</span><h1>관리자 로그인</h1>
-        <p>관리자 이메일은 <b>{ADMIN_EMAIL}</b>입니다. 비밀번호는 Supabase 회원가입 때 직접 설정한 비밀번호를 사용합니다.</p>
+        <p>관리자 이메일은 <b>{ADMIN_EMAIL}</b>입니다.</p>
         <form onSubmit={login}>
           <label>이메일<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder={ADMIN_EMAIL}/></label>
           <label>비밀번호<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="비밀번호"/></label>
@@ -142,22 +194,50 @@ export default function AdminDashboard() {
   }
 
   return <main className="admin-page">
-    <header className="admin-header"><div><span>MISO BRIDGE</span><h1>관리자 대시보드</h1></div><div className="admin-header-actions"><button onClick={loadApplications}><RefreshCw size={17}/>새로고침</button><button onClick={logout}><LogOut size={17}/>로그아웃</button></div></header>
+    <header className="admin-header"><div><span>MISO BRIDGE</span><h1>관리자 대시보드</h1></div><div className="admin-header-actions"><button onClick={loadAll}><RefreshCw size={17}/>새로고침</button><button onClick={logout}><LogOut size={17}/>로그아웃</button></div></header>
     {notice && <div className={`admin-notice ${notice.type}`}>{notice.text}</div>}
+
     <section className="admin-stats">
-      <article><Store/><div><b>{applications.length}</b><span>전체 거래 신청</span></div></article>
-      <article><Users/><div><b>{applications.filter((x) => (x.status ?? "pending") === "pending").length}</b><span>승인 대기</span></div></article>
-      <article><ShieldCheck/><div><b>{applications.filter((x) => x.status === "approved").length}</b><span>승인 완료</span></div></article>
+      <article><Store/><div><b>{partners.length}</b><span>신규 거래 신청</span></div></article>
+      <article><MapPin/><div><b>{pickups.length}</b><span>픽업 파트너 신청</span></div></article>
+      <article><Megaphone/><div><b>{ads.length}</b><span>광고·입점 문의</span></div></article>
+      <article><Users/><div><b>{[...partners, ...pickups, ...ads].filter((x) => (x.status ?? "pending") === "pending").length}</b><span>전체 승인 대기</span></div></article>
     </section>
+
     <section className="admin-panel">
       <div className="admin-panel-title"><div><span>PARTNER APPLICATIONS</span><h2>신규 거래 신청</h2></div><a href="/">홈페이지 보기</a></div>
-      {loading ? <p className="admin-empty">신청 목록을 불러오는 중입니다.</p> : applications.length === 0 ? <p className="admin-empty">접수된 신청이 없습니다. 신청 후 보이지 않으면 관리자 조회 정책 SQL을 실행해야 합니다.</p> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>접수일</th><th>매장/대표자</th><th>연락처·주소</th><th>업종</th><th>사업자등록증</th><th>상태</th></tr></thead><tbody>{applications.map((item) => <tr key={item.id}>
+      {loading ? <p className="admin-empty">목록을 불러오는 중입니다.</p> : partners.length === 0 ? <p className="admin-empty">접수된 신규 거래 신청이 없습니다.</p> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>접수일</th><th>매장/대표자</th><th>연락처·주소</th><th>업종</th><th>사업자등록증</th><th>상태</th></tr></thead><tbody>{partners.map((item) => <tr key={item.id}>
         <td>{new Date(item.created_at).toLocaleString("ko-KR")}</td>
         <td><strong>{item.store_name}</strong><small>{item.owner_name}</small></td>
         <td><a href={`tel:${item.phone}`}><Phone size={14}/>{item.phone}</a><small>{item.address}</small></td>
         <td>{item.business_type}</td>
         <td><button className="document-button" onClick={() => openLicense(item.license_path)}><FileText size={16}/>파일 보기</button></td>
-        <td><select disabled={savingId === item.id} value={item.status ?? "pending"} onChange={(e) => changeStatus(item.id, e.target.value)}><option value="pending">대기</option><option value="approved">승인</option><option value="hold">보류</option><option value="rejected">거절</option></select></td>
+        <td>{statusSelect("partner_applications", item.id, item.status)}</td>
+      </tr>)}</tbody></table></div>}
+    </section>
+
+    <section className="admin-panel">
+      <div className="admin-panel-title"><div><span>PICKUP PARTNERS</span><h2>픽업 파트너 신청</h2></div></div>
+      {loading ? <p className="admin-empty">목록을 불러오는 중입니다.</p> : pickups.length === 0 ? <p className="admin-empty">접수된 픽업 파트너 신청이 없습니다.</p> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>접수일</th><th>매장/대표자</th><th>연락처·주소</th><th>픽업 가능 시간</th><th>관심 혜택</th><th>상태</th></tr></thead><tbody>{pickups.map((item) => <tr key={item.id}>
+        <td>{new Date(item.created_at).toLocaleString("ko-KR")}</td>
+        <td><strong>{item.store_name}</strong><small>{item.owner_name}</small></td>
+        <td><a href={`tel:${item.phone}`}><Phone size={14}/>{item.phone}</a><small>{item.address}</small></td>
+        <td>{item.pickup_hours || "-"}</td>
+        <td>{item.benefit_interest || "-"}</td>
+        <td>{statusSelect("pickup_partner_applications", item.id, item.status)}</td>
+      </tr>)}</tbody></table></div>}
+    </section>
+
+    <section className="admin-panel">
+      <div className="admin-panel-title"><div><span>ADVERTISING INQUIRIES</span><h2>광고·입점 문의</h2></div></div>
+      {loading ? <p className="admin-empty">목록을 불러오는 중입니다.</p> : ads.length === 0 ? <p className="admin-empty">접수된 광고·입점 문의가 없습니다.</p> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>접수일</th><th>회사/담당자</th><th>연락처</th><th>분류</th><th>예산</th><th>문의 내용</th><th>상태</th></tr></thead><tbody>{ads.map((item) => <tr key={item.id}>
+        <td>{new Date(item.created_at).toLocaleString("ko-KR")}</td>
+        <td><strong>{item.company_name}</strong><small>{item.contact_name}</small></td>
+        <td><a href={`tel:${item.phone}`}><Phone size={14}/>{item.phone}</a></td>
+        <td>{item.category || "-"}</td>
+        <td>{item.budget || "-"}</td>
+        <td>{item.inquiry || "-"}</td>
+        <td>{statusSelect("advertising_inquiries", item.id, item.status)}</td>
       </tr>)}</tbody></table></div>}
     </section>
   </main>;
