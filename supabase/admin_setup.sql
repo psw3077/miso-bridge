@@ -3,8 +3,11 @@
 
 alter table if exists public.partner_applications
   add column if not exists status text not null default 'pending';
+alter table if exists public.pickup_partner_applications
+  add column if not exists status text not null default 'pending';
+alter table if exists public.advertising_inquiries
+  add column if not exists status text not null default 'pending';
 
--- 관리자 이메일 판별 함수
 create or replace function public.is_miso_admin()
 returns boolean
 language sql
@@ -15,13 +18,10 @@ as $$
   select coalesce(auth.jwt() ->> 'email', '') = 'psw3077@gmail.com';
 $$;
 
--- 신청 테이블 RLS 활성화
 alter table public.partner_applications enable row level security;
 alter table public.pickup_partner_applications enable row level security;
 alter table public.advertising_inquiries enable row level security;
 
--- 비로그인/로그인 사용자 모두 신청 등록 허용
--- 기존 정책 이름이 달라도 중복 정책은 문제없이 OR 조건으로 적용됩니다.
 drop policy if exists "public insert partner applications" on public.partner_applications;
 create policy "public insert partner applications"
 on public.partner_applications
@@ -43,13 +43,10 @@ for insert
 to anon, authenticated
 with check (true);
 
--- 사업자등록증 버킷 생성(이미 있으면 유지)
 insert into storage.buckets (id, name, public)
 values ('business-licenses', 'business-licenses', false)
 on conflict (id) do nothing;
 
--- 비로그인/로그인 사용자 모두 사업자등록증 업로드 허용
--- 조회는 허용하지 않고 관리자만 아래 정책으로 볼 수 있습니다.
 drop policy if exists "public upload business licenses" on storage.objects;
 create policy "public upload business licenses"
 on storage.objects
@@ -68,6 +65,38 @@ using (public.is_miso_admin());
 drop policy if exists "miso admin update partner applications" on public.partner_applications;
 create policy "miso admin update partner applications"
 on public.partner_applications
+for update
+to authenticated
+using (public.is_miso_admin())
+with check (public.is_miso_admin());
+
+-- 관리자: 픽업 파트너 신청 조회/수정
+drop policy if exists "miso admin read pickup applications" on public.pickup_partner_applications;
+create policy "miso admin read pickup applications"
+on public.pickup_partner_applications
+for select
+to authenticated
+using (public.is_miso_admin());
+
+drop policy if exists "miso admin update pickup applications" on public.pickup_partner_applications;
+create policy "miso admin update pickup applications"
+on public.pickup_partner_applications
+for update
+to authenticated
+using (public.is_miso_admin())
+with check (public.is_miso_admin());
+
+-- 관리자: 광고 문의 조회/수정
+drop policy if exists "miso admin read advertising inquiries" on public.advertising_inquiries;
+create policy "miso admin read advertising inquiries"
+on public.advertising_inquiries
+for select
+to authenticated
+using (public.is_miso_admin());
+
+drop policy if exists "miso admin update advertising inquiries" on public.advertising_inquiries;
+create policy "miso admin update advertising inquiries"
+on public.advertising_inquiries
 for update
 to authenticated
 using (public.is_miso_admin())
