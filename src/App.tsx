@@ -1,7 +1,8 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import {
   ArrowRight, BadgeCheck, BarChart3, Building2, CheckCircle2, ChevronRight,
-  FileUp, Instagram, LogIn, MapPin, Menu, Megaphone, MessageCircle,
+  FileUp, Instagram, LogIn, LogOut, MapPin, Menu, Megaphone, MessageCircle,
   Newspaper, Phone, PlayCircle, Search, ShieldCheck, Sparkles, Store,
   UserPlus, Users, X,
 } from "lucide-react";
@@ -24,6 +25,16 @@ function App() {
   const [authMode, setAuthMode] = useState<AuthMode>("signup");
   const [notice, setNotice] = useState<Notice>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   const openForm = (kind: Exclude<FormKind, null>, mode?: AuthMode) => {
     if (mode) setAuthMode(mode);
@@ -35,6 +46,12 @@ function App() {
     setFormKind(null);
     document.body.style.overflow = "";
   };
+
+  async function logout() {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setMenuOpen(false);
+  }
 
   async function submitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,7 +71,13 @@ function App() {
           ? await supabase.auth.signUp({ email, password, options: { data: { name: data.get("name"), member_type: data.get("member_type") } } })
           : await supabase.auth.signInWithPassword({ email, password });
         if (result.error) throw result.error;
-        setNotice({ type: "ok", text: authMode === "signup" ? "회원가입이 접수되었습니다. 이메일을 확인해 주세요." : "로그인되었습니다." });
+        if (authMode === "signup" && !result.data.session) {
+          setNotice({ type: "ok", text: "회원가입이 접수되었습니다. 이메일 인증 후 로그인해 주세요." });
+        } else {
+          setNotice({ type: "ok", text: "로그인되었습니다. 창을 닫으면 상단에 로그인 계정이 표시됩니다." });
+          setUser(result.data.user ?? null);
+          setTimeout(closeForm, 700);
+        }
       } else if (formKind === "partner") {
         const file = data.get("license") as File;
         if (!file?.size) throw new Error("사업자등록증 파일을 첨부해 주세요.");
@@ -97,8 +120,14 @@ function App() {
       <nav className={menuOpen ? "nav open" : "nav"}>
         <a href="#business">사장님 시작하기</a><a href="#pickup-center">픽업 매장 찾기</a>
         <a href="#success-center">장사성공센터</a><a href="#advertising">광고센터</a><a href="#about">회사소개</a>
-        <button className="nav-link" onClick={() => openForm("auth", "signup")}><UserPlus size={16}/> 회원가입</button>
-        <button className="nav-link" onClick={() => openForm("auth", "login")}><LogIn size={16}/> 로그인</button>
+        {user ? <>
+          <span className="nav-user">{user.email}</span>
+          {user.email === "psw3077@gmail.com" && <a href="/?admin=1">관리자</a>}
+          <button className="nav-link" onClick={logout}><LogOut size={16}/> 로그아웃</button>
+        </> : <>
+          <button className="nav-link" onClick={() => openForm("auth", "signup")}><UserPlus size={16}/> 회원가입</button>
+          <button className="nav-link" onClick={() => openForm("auth", "login")}><LogIn size={16}/> 로그인</button>
+        </>}
       </nav>
       <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X/> : <Menu/>}</button>
     </header>
@@ -111,7 +140,7 @@ function App() {
           <p>주류 거래부터 픽업, 창업·마케팅·광고까지.<br/>외식업 사장님에게 필요한 연결을 한곳에 모았습니다.</p>
           <div className="hero-actions">
             <button className="button primary" onClick={() => openForm("partner")}>사장님 시작하기 <ArrowRight size={18}/></button>
-            <button className="button secondary" onClick={() => openForm("auth", "signup")}>무료 회원가입</button>
+            {!user && <button className="button secondary" onClick={() => openForm("auth", "signup")}>무료 회원가입</button>}
           </div>
           <div className="trust-row"><span><ShieldCheck/> 사업자 서류 안전 보관</span><span><CheckCircle2/> 서울·경기 전역 상담</span></div>
         </div>
@@ -157,11 +186,11 @@ function App() {
 
     <footer><div className="brand footer-brand"><span className="brand-mark">M</span><span><b>MISO BRIDGE</b><small>사장님의 성공을 연결합니다.</small></span></div><p>(주)미소주류 · 대표전화 031-336-3077<br/>서울·경기 전역 주류 거래 및 외식업 연결 상담</p><p className="copyright">이용약관 · 개인정보처리방침<br/>© 2026 MISO BRIDGE.</p></footer>
 
-    <div className="mobile-actions"><a href="tel:0313363077"><Phone/>전화</a><a href={links.kakao} target="_blank" rel="noreferrer"><MessageCircle/>카카오</a><button onClick={() => openForm("auth", "signup")}><UserPlus/>가입</button><button onClick={() => openForm("partner")}><Store/>거래신청</button></div>
+    <div className="mobile-actions"><a href="tel:0313363077"><Phone/>전화</a><a href={links.kakao} target="_blank" rel="noreferrer"><MessageCircle/>카카오</a>{user ? <button onClick={logout}><LogOut/>로그아웃</button> : <button onClick={() => openForm("auth", "signup")}><UserPlus/>가입</button>}<button onClick={() => openForm("partner")}><Store/>거래신청</button></div>
 
     {formKind && <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && closeForm()}><div className="modal"><button className="modal-close" onClick={closeForm}><X/></button><div className="modal-head"><span className="section-kicker">MISO BRIDGE</span><h2>{formKind === "partner" ? "신규 거래 신청" : formKind === "pickup" ? "픽업 파트너 신청" : formKind === "advertising" ? "광고·입점 문의" : authMode === "signup" ? "회원가입" : "로그인"}</h2></div>{!isSupabaseConfigured && <div className="config-alert">Supabase 환경변수를 연결하면 실제 접수와 로그인이 작동합니다.</div>}<form onSubmit={submitForm}>
       {formKind === "auth" ? <><Field label="이메일" name="email" type="email" required/><Field label="비밀번호" name="password" type="password" required/>{authMode === "signup" && <><Field label="이름" name="name" required/><Select label="회원 구분" name="member_type" options={["일반회원","사업자회원","픽업 파트너","제조사·광고주"]}/></>}</> : formKind === "advertising" ? <><Field label="회사명" name="company_name" required/><Field label="담당자명" name="contact_name" required/><Field label="연락처" name="phone" type="tel" required/><Select label="문의 구분" name="category" options={["제조사 입점","배너 광고","프랜차이즈","식자재·서비스","기타"]}/><Field label="예상 예산" name="budget"/><Field label="문의 내용" name="inquiry" textarea full required/></> : <><Field label="매장명" name="store_name" required/><Field label="대표자명" name="owner_name" required/><Field label="연락처" name="phone" type="tel" required/><Field label="매장 주소" name="address" required/>{formKind === "partner" ? <><Select label="업종" name="business_type" options={["일반음식점","주점","카페","소매점","신규 오픈 준비","기타"]}/><label className="field full"><span>사업자등록증 <b>*</b></span><div className="file-input"><FileUp/><input name="license" type="file" accept=".pdf,.jpg,.jpeg,.png" required/></div></label><Field label="문의 내용" name="inquiry" textarea full/></> : <><Field label="픽업 가능 시간" name="pickup_hours" required/><Select label="원하는 혜택" name="benefit_interest" options={["신규 고객 방문","매장 홍보","픽업 수익","신제품 우선 공급"]}/></>}</>}
-      {notice && <div className={`notice ${notice.type}`}>{notice.text}</div>}<button className="button primary submit-button" disabled={submitting}>{submitting ? "처리 중..." : "신청하기"}</button></form></div></div>}
+      {notice && <div className={`notice ${notice.type}`}>{notice.text}</div>}{formKind === "auth" && <div className="auth-switch">{authMode === "login" ? <button type="button" onClick={() => { setAuthMode("signup"); setNotice(null); }}>계정이 없나요? 회원가입</button> : <button type="button" onClick={() => { setAuthMode("login"); setNotice(null); }}>이미 가입했나요? 로그인</button>}</div>}<button className="button primary submit-button" disabled={submitting}>{submitting ? "처리 중..." : formKind === "auth" ? (authMode === "login" ? "로그인" : "회원가입") : "신청하기"}</button></form></div></div>}
   </>;
 }
 
