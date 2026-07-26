@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [notice, setNotice] = useState<Notice>(null);
   const [loading, setLoading] = useState(true);
+  const [savingId, setSavingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabase) {
@@ -96,13 +97,28 @@ export default function AdminDashboard() {
   }
 
   async function changeStatus(id: string, status: string) {
-    if (!supabase) return;
-    const { error } = await supabase.from("partner_applications").update({ status }).eq("id", id);
-    if (error) setNotice({ type: "error", text: `상태 변경 실패: ${error.message}` });
-    else {
-      setApplications((items) => items.map((item) => item.id === id ? { ...item, status } : item));
-      setNotice({ type: "ok", text: "처리 상태를 변경했습니다." });
+    if (!supabase || savingId) return;
+    setNotice(null);
+    setSavingId(id);
+
+    const { data, error } = await supabase
+      .from("partner_applications")
+      .update({ status })
+      .eq("id", id)
+      .select("id, status")
+      .maybeSingle();
+
+    if (error) {
+      setNotice({ type: "error", text: `상태 변경 실패: ${error.message}` });
+    } else if (!data) {
+      setNotice({ type: "error", text: "상태가 저장되지 않았습니다. 관리자 수정 권한을 다시 확인해 주세요." });
+      await loadApplications();
+    } else {
+      setApplications((items) => items.map((item) => item.id === id ? { ...item, status: data.status } : item));
+      setNotice({ type: "ok", text: "처리 상태가 저장되었습니다." });
     }
+
+    setSavingId(null);
   }
 
   if (!isSupabaseConfigured) {
@@ -141,7 +157,7 @@ export default function AdminDashboard() {
         <td><a href={`tel:${item.phone}`}><Phone size={14}/>{item.phone}</a><small>{item.address}</small></td>
         <td>{item.business_type}</td>
         <td><button className="document-button" onClick={() => openLicense(item.license_path)}><FileText size={16}/>파일 보기</button></td>
-        <td><select value={item.status ?? "pending"} onChange={(e) => changeStatus(item.id, e.target.value)}><option value="pending">대기</option><option value="approved">승인</option><option value="hold">보류</option><option value="rejected">거절</option></select></td>
+        <td><select disabled={savingId === item.id} value={item.status ?? "pending"} onChange={(e) => changeStatus(item.id, e.target.value)}><option value="pending">대기</option><option value="approved">승인</option><option value="hold">보류</option><option value="rejected">거절</option></select></td>
       </tr>)}</tbody></table></div>}
     </section>
   </main>;
