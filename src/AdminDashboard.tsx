@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { FileText, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users, Megaphone, MapPin, Search } from "lucide-react";
+import { FileText, Home, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users, Megaphone, MapPin, Search } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 
 type Status = "pending" | "approved" | "hold" | "rejected";
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
   if (signedInEmail !== ADMIN_EMAIL) return <main className="admin-shell"><section className="admin-login"><ShieldCheck size={42}/><span>MISO BRIDGE ADMIN</span><h1>관리자 로그인</h1><p>관리자 이메일은 <b>{ADMIN_EMAIL}</b>입니다.</p><form onSubmit={login}><label>이메일<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder={ADMIN_EMAIL}/></label><label>비밀번호<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="비밀번호"/></label>{notice && <div className={`admin-notice ${notice.type}`}>{notice.text}</div>}<button disabled={loading}><LogIn size={18}/>{loading ? "로그인 중..." : "로그인"}</button></form><a href="/">← 미소브릿지 홈</a></section></main>;
 
   return <main className="admin-page">
-    <header className="admin-header"><div><span>MISO BRIDGE</span><h1>관리자 대시보드</h1></div><div className="admin-header-actions"><button onClick={loadAll}><RefreshCw size={17}/>새로고침</button><button onClick={logout}><LogOut size={17}/>로그아웃</button></div></header>
+    <header className="admin-header"><div><span>MISO BRIDGE</span><h1>관리자 대시보드</h1></div><div className="admin-header-actions"><a className="admin-home-link" href="/"><Home size={17}/>홈페이지</a><button onClick={loadAll}><RefreshCw size={17}/>새로고침</button><button onClick={logout}><LogOut size={17}/>로그아웃</button></div></header>
     {notice && <div className={`admin-notice admin-wide-notice ${notice.type}`}>{notice.text}</div>}
     <section className="admin-stats">
       <article><Store/><div><b>{partners.length}</b><span>신규 거래 신청</span></div></article>
