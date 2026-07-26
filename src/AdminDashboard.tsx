@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { FileText, Home, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users, Megaphone, MapPin, Search } from "lucide-react";
+import { AlertTriangle, Database, FileText, Home, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users, Megaphone, MapPin, Search } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 
 type Status = "pending" | "approved" | "hold" | "rejected";
@@ -21,6 +21,7 @@ type AdvertisingInquiry = {
 };
 
 const ADMIN_EMAIL = "psw3077@gmail.com";
+const SQL_FILE_URL = "https://github.com/psw3077/miso-bridge/blob/main/supabase/admin_setup.sql";
 
 export default function AdminDashboard() {
   const [email, setEmail] = useState("");
@@ -114,6 +115,7 @@ export default function AdminDashboard() {
   const filteredPartners = useMemo(() => partners.filter((x) => !q || [x.store_name, x.owner_name, x.phone, x.address, x.business_type, x.inquiry].some((v) => String(v ?? "").toLowerCase().includes(q))), [partners, q]);
   const filteredPickups = useMemo(() => pickups.filter((x) => !q || [x.store_name, x.owner_name, x.phone, x.address, x.pickup_hours, x.benefit_interest].some((v) => String(v ?? "").toLowerCase().includes(q))), [pickups, q]);
   const filteredAds = useMemo(() => ads.filter((x) => !q || [x.company_name, x.contact_name, x.phone, x.category, x.budget, x.inquiry].some((v) => String(v ?? "").toLowerCase().includes(q))), [ads, q]);
+  const permissionSetupNeeded = !loading && partners.length > 0 && pickups.length === 0 && ads.length === 0;
 
   if (!isSupabaseConfigured) return <main className="admin-shell"><section className="admin-login"><ShieldCheck size={42}/><h1>미소브릿지 관리자</h1><p>Cloudflare의 Supabase 환경변수를 먼저 연결해 주세요.</p><a href="/">홈으로 돌아가기</a></section></main>;
 
@@ -122,6 +124,13 @@ export default function AdminDashboard() {
   return <main className="admin-page">
     <header className="admin-header"><div><span>MISO BRIDGE</span><h1>관리자 대시보드</h1></div><div className="admin-header-actions"><a className="admin-home-link" href="/"><Home size={17}/>홈페이지</a><button onClick={loadAll}><RefreshCw size={17}/>새로고침</button><button onClick={logout}><LogOut size={17}/>로그아웃</button></div></header>
     {notice && <div className={`admin-notice admin-wide-notice ${notice.type}`}>{notice.text}</div>}
+
+    {permissionSetupNeeded && <section className="admin-permission-guide">
+      <AlertTriangle size={28}/>
+      <div><b>픽업·광고 접수 건이 0으로 보이나요?</b><p>접수 완료 문구가 떴는데 여기에서 0건이면 Supabase 관리자 조회 권한 SQL을 한 번 실행해야 합니다.</p></div>
+      <a href={SQL_FILE_URL} target="_blank" rel="noreferrer"><Database size={17}/>권한 SQL 열기</a>
+    </section>}
+
     <section className="admin-stats">
       <article><Store/><div><b>{partners.length}</b><span>신규 거래 신청</span></div></article>
       <article><MapPin/><div><b>{pickups.length}</b><span>픽업 파트너 신청</span></div></article>
