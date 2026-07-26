@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Database, FileText, Home, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users, Megaphone, MapPin, Search } from "lucide-react";
+import { AlertTriangle, Cloud, Code2, Database, ExternalLink, FileText, Home, LogIn, LogOut, Phone, RefreshCw, ShieldCheck, Store, Users, Megaphone, MapPin, Search, TableProperties } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 
 type Status = "pending" | "approved" | "hold" | "rejected";
@@ -22,6 +22,10 @@ type AdvertisingInquiry = {
 
 const ADMIN_EMAIL = "psw3077@gmail.com";
 const SQL_FILE_URL = "https://github.com/psw3077/miso-bridge/blob/main/supabase/admin_setup.sql";
+const GITHUB_REPO_URL = "https://github.com/psw3077/miso-bridge";
+const SUPABASE_SQL_URL = "https://supabase.com/dashboard/project/uapndiopsckecpysdzuk/sql/new";
+const SUPABASE_TABLE_URL = "https://supabase.com/dashboard/project/uapndiopsckecpysdzuk/editor";
+const CLOUDFLARE_URL = "https://dash.cloudflare.com/";
 
 export default function AdminDashboard() {
   const [email, setEmail] = useState("");
@@ -124,6 +128,16 @@ export default function AdminDashboard() {
   return <main className="admin-page">
     <header className="admin-header"><div><span>MISO BRIDGE</span><h1>관리자 대시보드</h1></div><div className="admin-header-actions"><a className="admin-home-link" href="/"><Home size={17}/>홈페이지</a><button onClick={loadAll}><RefreshCw size={17}/>새로고침</button><button onClick={logout}><LogOut size={17}/>로그아웃</button></div></header>
     {notice && <div className={`admin-notice admin-wide-notice ${notice.type}`}>{notice.text}</div>}
+
+    <section className="admin-quick-tools">
+      <div><span>QUICK TOOLS</span><h2>프로그램 바로가기</h2><p>관리 작업에 필요한 프로그램을 새 창으로 바로 엽니다.</p></div>
+      <nav>
+        <a href={SUPABASE_SQL_URL} target="_blank" rel="noreferrer"><Database/><b>Supabase SQL</b><small>권한 SQL 실행</small><ExternalLink/></a>
+        <a href={SUPABASE_TABLE_URL} target="_blank" rel="noreferrer"><TableProperties/><b>Supabase 데이터</b><small>접수 내역 확인</small><ExternalLink/></a>
+        <a href={GITHUB_REPO_URL} target="_blank" rel="noreferrer"><Code2/><b>GitHub</b><small>홈페이지 코드 관리</small><ExternalLink/></a>
+        <a href={CLOUDFLARE_URL} target="_blank" rel="noreferrer"><Cloud/><b>Cloudflare</b><small>배포 상태 확인</small><ExternalLink/></a>
+      </nav>
+    </section>
 
     {permissionSetupNeeded && <section className="admin-permission-guide">
       <AlertTriangle size={28}/>
