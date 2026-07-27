@@ -12,7 +12,7 @@ function renderLogin(message = '') {
       <section class="login-card">
         <a class="back" href="/">← PLB 홈페이지</a>
         <div class="admin-brand"><span>PLB</span><div><b>관리자 로그인</b><small>ADMIN CONSOLE</small></div></div>
-        <p>제품과 문의를 관리하는 전용 화면입니다.</p>
+        <p>제품과 문의, 제조사 자료를 관리하는 전용 화면입니다.</p>
         <form id="loginForm">
           <label>관리자 이메일<input type="email" name="email" required autocomplete="username"></label>
           <label>비밀번호<input type="password" name="password" required autocomplete="current-password"></label>
@@ -42,13 +42,13 @@ async function renderDashboard() {
   app.innerHTML = `
     <main class="admin-shell">
       <header class="admin-header">
-        <div class="admin-brand"><span>PLB</span><div><b>관리자 대시보드</b><small>PRODUCT & INQUIRY MANAGEMENT</small></div></div>
+        <div class="admin-brand"><span>PLB</span><div><b>관리자 대시보드</b><small>PRODUCT · RESOURCE · INQUIRY</small></div></div>
         <div><a class="home-link" href="/">홈페이지 보기</a><button id="logoutButton" class="logout">로그아웃</button></div>
       </header>
       <section class="stats">
         <article><small>전체 문의</small><strong id="totalCount">-</strong></article>
-        <article><small>신규 문의</small><strong id="newCount">-</strong></article>
         <article><small>등록 제품</small><strong id="productCount">-</strong></article>
+        <article><small>등록 자료</small><strong id="resourceCount">-</strong></article>
       </section>
       <section class="panel product-panel">
         <div class="panel-head"><div><h1>제품 관리</h1><p>KCC·삼화·조광·제비스코 제품을 등록합니다.</p></div></div>
@@ -64,6 +64,19 @@ async function renderDashboard() {
         </form>
         <div id="productList" class="product-list"><p>제품을 불러오고 있습니다.</p></div>
       </section>
+      <section class="panel resource-panel">
+        <div class="panel-head"><div><h1>제조사 자료 관리</h1><p>TDS·MSDS·카탈로그 링크를 등록합니다.</p></div></div>
+        <form id="resourceForm" class="resource-form">
+          <select name="manufacturer" required><option value="">제조사 선택</option><option>KCC</option><option>삼화페인트</option><option>조광페인트</option><option>제비스코</option><option>기타</option></select>
+          <input name="title" required placeholder="자료명">
+          <select name="resource_type"><option>TDS</option><option>MSDS</option><option>카탈로그</option><option>기술자료</option><option>기타</option></select>
+          <input name="file_url" type="url" required placeholder="PDF 또는 공식자료 URL">
+          <input name="description" placeholder="간단한 설명">
+          <button type="submit">자료 등록</button>
+          <p id="resourceStatus" class="status"></p>
+        </form>
+        <div id="resourceList" class="resource-list"><p>자료를 불러오고 있습니다.</p></div>
+      </section>
       <section class="panel">
         <div class="panel-head"><div><h1>문의 관리</h1><p>최근 접수된 제품·납품 문의입니다.</p></div><button id="refreshButton">새로고침</button></div>
         <div id="inquiryList" class="inquiry-list"><p>문의 내용을 불러오고 있습니다.</p></div>
@@ -71,10 +84,12 @@ async function renderDashboard() {
     </main>`;
 
   document.querySelector('#logoutButton').addEventListener('click', async () => { await supabase.auth.signOut(); renderLogin('로그아웃되었습니다.'); });
-  document.querySelector('#refreshButton').addEventListener('click', () => { loadInquiries(); loadProducts(); });
+  document.querySelector('#refreshButton').addEventListener('click', () => { loadInquiries(); loadProducts(); loadResources(); });
   document.querySelector('#productForm').addEventListener('submit', saveProduct);
+  document.querySelector('#resourceForm').addEventListener('submit', saveResource);
   loadInquiries();
   loadProducts();
+  loadResources();
 }
 
 async function saveProduct(event) {
@@ -87,6 +102,18 @@ async function saveProduct(event) {
   event.currentTarget.reset();
   status.textContent = '제품이 등록되었습니다.';
   loadProducts();
+}
+
+async function saveResource(event) {
+  event.preventDefault();
+  const status = document.querySelector('#resourceStatus');
+  const data = Object.fromEntries(new FormData(event.currentTarget));
+  status.textContent = '자료를 등록하고 있습니다.';
+  const { error } = await supabase.from('resources').insert(data);
+  if (error) return status.textContent = '등록 실패: 자료 테이블과 권한 설정을 확인해주세요.';
+  event.currentTarget.reset();
+  status.textContent = '제조사 자료가 등록되었습니다.';
+  loadResources();
 }
 
 async function loadProducts() {
@@ -107,13 +134,30 @@ async function loadProducts() {
   }));
 }
 
+async function loadResources() {
+  const list = document.querySelector('#resourceList');
+  const { data, error } = await supabase.from('resources').select('*').order('created_at', { ascending: false });
+  if (error) { list.innerHTML = '<p class="error">자료 데이터를 불러오지 못했습니다.</p>'; return; }
+  document.querySelector('#resourceCount').textContent = data.length;
+  if (!data.length) return list.innerHTML = '<p>등록된 제조사 자료가 없습니다.</p>';
+  list.innerHTML = data.map((item) => `
+    <article class="resource-card">
+      <div><span class="maker">${escapeHtml(item.manufacturer)}</span><span class="resource-type">${escapeHtml(item.resource_type)}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description || '설명 없음')}</p><a href="${escapeAttribute(item.file_url)}" target="_blank" rel="noopener">자료 열기 →</a></div>
+      <button class="delete-resource" data-id="${item.id}">삭제</button>
+    </article>`).join('');
+  document.querySelectorAll('.delete-resource').forEach((button) => button.addEventListener('click', async () => {
+    if (!confirm('이 자료를 삭제하시겠습니까?')) return;
+    await supabase.from('resources').delete().eq('id', button.dataset.id);
+    loadResources();
+  }));
+}
+
 async function loadInquiries() {
   const list = document.querySelector('#inquiryList');
   list.innerHTML = '<p>문의 내용을 불러오고 있습니다.</p>';
   const { data, error } = await supabase.from('inquiries').select('*').order('created_at', { ascending: false });
   if (error) return list.innerHTML = '<p class="error">문의 조회 권한 또는 데이터베이스 설정을 확인해주세요.</p>';
   document.querySelector('#totalCount').textContent = data.length;
-  document.querySelector('#newCount').textContent = data.filter((item) => item.status === 'new').length;
   if (!data.length) return list.innerHTML = '<p>아직 접수된 문의가 없습니다.</p>';
   list.innerHTML = data.map((item) => `
     <article class="inquiry-card">
@@ -124,6 +168,7 @@ async function loadInquiries() {
 }
 
 function escapeHtml(value = '') { return String(value).replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
+function escapeAttribute(value = '') { return escapeHtml(value); }
 
 if (!supabase) renderLogin('Supabase 환경변수를 먼저 연결해주세요.');
 else supabase.auth.getSession().then(({ data }) => data.session ? renderDashboard() : renderLogin());
