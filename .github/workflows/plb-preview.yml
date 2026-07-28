@@ -5,6 +5,13 @@ on:
     branches: [plb-homepage-v1]
     paths:
       - 'plb-homepage/**'
+      - 'netlify.toml'
+      - '.github/workflows/plb-preview.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'plb-homepage/**'
+      - 'netlify.toml'
       - '.github/workflows/plb-preview.yml'
   workflow_dispatch:
 
