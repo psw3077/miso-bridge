@@ -1,10 +1,5 @@
 import './styles.css';
 import './channels.css';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 const app = document.querySelector('#app');
 
 const sampleProducts = [
@@ -86,18 +81,35 @@ function renderResources() {
   resourceGrid.innerHTML = filtered.length ? filtered.map((item) => `<article class="resource-card"><div class="resource-top"><span>${escapeHtml(item.manufacturer)}</span><b>${escapeHtml(item.resource_type)}</b></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description || '제조사 기술자료')}</p><a href="${safeUrl(item.file_url)}" target="_blank" rel="noopener">자료 열기 →</a></article>`).join('') : '<p class="empty-products">등록된 자료가 없습니다.</p>';
 }
 
+async function fetchCatalog(path) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 8000);
+  try {
+    const response = await fetch(path, { signal: controller.signal });
+    if (!response.ok) throw new Error('catalog request failed');
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 async function loadProducts() {
-  if (supabase) {
-    const { data, error } = await supabase.from('products').select('*').eq('is_active', true).order('created_at', { ascending: false });
-    if (!error && data?.length) products = data;
+  try {
+    const data = await fetchCatalog('/api/products');
+    if (data.length) products = data;
+  } catch {
+    // Keep the reliable sample catalog visible when the live catalog is unavailable.
   }
   renderProducts();
 }
 
 async function loadResources() {
-  if (supabase) {
-    const { data, error } = await supabase.from('resources').select('*').order('created_at', { ascending: false });
-    if (!error && data?.length) resources = data;
+  try {
+    const data = await fetchCatalog('/api/resources');
+    if (data.length) resources = data;
+  } catch {
+    // Keep the official manufacturer links visible when the live library is unavailable.
   }
   renderResources();
 }
