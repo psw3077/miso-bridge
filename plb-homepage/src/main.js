@@ -132,7 +132,7 @@ document.querySelector('#inquiryForm').addEventListener('submit', async (event) 
   }
   const { error } = await supabase.from('inquiries').insert(data);
   if (error) {
-    status.textContent = '문의 저장에 실패했습니다. 전화 또는 이메일로 연락해주세요.';
+    status.textContent = `문의 저장 실패: ${error.message}`;
     return;
   }
   event.currentTarget.reset();
