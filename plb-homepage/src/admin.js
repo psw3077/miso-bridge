@@ -96,7 +96,7 @@ async function renderDashboard() {
       </section>
       <section class="panel">
         <div class="panel-head"><div><h1>문의 관리</h1><p>최근 접수된 제품·납품 문의입니다.</p></div><button id="refreshButton">새로고침</button></div>
-        <div id="inquiryList" class="inquiry-list"><p>문의 내용을 불러오고 있습니다.</p></div>
+        <p id="inquiryStatus" class="status"></p><div id="inquiryList" class="inquiry-list"><p>문의 내용을 불러오고 있습니다.</p></div>
       </section>
     </main>`;
 
@@ -193,17 +193,47 @@ async function loadResources() {
 
 async function loadInquiries() {
   const list = document.querySelector('#inquiryList');
+  const status = document.querySelector('#inquiryStatus');
+  status.textContent = '';
   list.innerHTML = '<p>문의 내용을 불러오고 있습니다.</p>';
-  const { data, error } = await supabase.from('inquiries').select('*').order('created_at', { ascending: false });
+  let result;
+  try {
+    result = await withTimeout(supabase.from('inquiries').select('*').order('created_at', { ascending: false }));
+  } catch {
+    return list.innerHTML = '<p class="error">문의 조회 연결이 지연되고 있습니다. 잠시 후 새로고침해주세요.</p>';
+  }
+  const { data, error } = result;
   if (error) return list.innerHTML = '<p class="error">문의 조회 권한 또는 데이터베이스 설정을 확인해주세요.</p>';
   document.querySelector('#totalCount').textContent = data.length;
   if (!data.length) return list.innerHTML = '<p>아직 접수된 문의가 없습니다.</p>';
+  const statusLabels = { new: '신규', contacted: '상담중', completed: '처리완료' };
   list.innerHTML = data.map((item) => `
     <article class="inquiry-card">
-      <div class="inquiry-top"><span class="badge ${item.status}">${item.status === 'new' ? '신규' : item.status}</span><time>${new Date(item.created_at).toLocaleString('ko-KR')}</time></div>
+      <div class="inquiry-top"><span class="badge ${escapeHtml(item.status)}">${statusLabels[item.status] || escapeHtml(item.status)}</span><time>${new Date(item.created_at).toLocaleString('ko-KR')}</time></div>
       <h2>${escapeHtml(item.subject)}</h2><p class="company">${escapeHtml(item.company_name)} · ${escapeHtml(item.phone)}</p>
-      <p class="message">${escapeHtml(item.message).replaceAll('\n', '<br>')}</p>
+      <p class="message">${escapeHtml(item.message).replaceAll('\\n', '<br>')}</p>
+      <div class="inquiry-actions">
+        <a href="tel:${escapeHtml(item.phone)}">전화하기</a>
+        <button class="inquiry-status" data-id="${item.id}" data-status="contacted">상담중</button>
+        <button class="inquiry-status complete" data-id="${item.id}" data-status="completed">처리완료</button>
+      </div>
     </article>`).join('');
+  document.querySelectorAll('.inquiry-status').forEach((button) => button.addEventListener('click', async () => {
+    status.textContent = '문의 상태를 변경하고 있습니다.';
+    button.disabled = true;
+    try {
+      const { error: updateError } = await withTimeout(
+        supabase.from('inquiries').update({ status: button.dataset.status }).eq('id', button.dataset.id)
+      );
+      if (updateError) return status.textContent = '상태 변경 권한을 확인해주세요.';
+      status.textContent = '문의 상태가 변경되었습니다.';
+      await loadInquiries();
+    } catch {
+      status.textContent = '상태 변경 연결이 지연되고 있습니다.';
+    } finally {
+      button.disabled = false;
+    }
+  }));
 }
 
 function escapeHtml(value = '') { return String(value).replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
