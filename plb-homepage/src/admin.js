@@ -6,6 +6,14 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 const app = document.querySelector('#adminApp');
 
+function withTimeout(promise, milliseconds = 12000) {
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = window.setTimeout(() => reject(new Error('timeout')), milliseconds);
+  });
+  return Promise.race([promise, timeout]).finally(() => window.clearTimeout(timeoutId));
+}
+
 function renderLogin(message = '') {
   app.innerHTML = `
     <main class="admin-shell login-shell">
@@ -26,11 +34,20 @@ function renderLogin(message = '') {
     event.preventDefault();
     const status = document.querySelector('#loginStatus');
     if (!supabase) return status.textContent = 'Supabase 환경변수를 먼저 연결해주세요.';
-    const values = Object.fromEntries(new FormData(event.currentTarget));
+    const form = event.currentTarget;
+    const values = Object.fromEntries(new FormData(form));
+    const button = form.querySelector('button[type="submit"]');
     status.textContent = '로그인 중입니다.';
-    const { error } = await supabase.auth.signInWithPassword(values);
-    if (error) return status.textContent = '이메일 또는 비밀번호를 확인해주세요.';
-    renderDashboard();
+    button.disabled = true;
+    try {
+      const { error } = await withTimeout(supabase.auth.signInWithPassword(values));
+      if (error) return status.textContent = '이메일 또는 비밀번호를 확인해주세요.';
+      renderDashboard();
+    } catch {
+      status.textContent = '로그인 연결이 지연되고 있습니다. 잠시 후 다시 시도해주세요.';
+    } finally {
+      button.disabled = false;
+    }
   });
 }
 
@@ -94,26 +111,48 @@ async function renderDashboard() {
 
 async function saveProduct(event) {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = document.querySelector('#productStatus');
-  const data = Object.fromEntries(new FormData(event.currentTarget));
+  const button = form.querySelector('button[type="submit"]');
+  const data = Object.fromEntries(new FormData(form));
   status.textContent = '제품을 등록하고 있습니다.';
-  const { error } = await supabase.from('products').insert(data);
-  if (error) return status.textContent = '등록 실패: 제품 테이블과 권한 설정을 확인해주세요.';
-  event.currentTarget.reset();
-  status.textContent = '제품이 등록되었습니다.';
-  loadProducts();
+  button.disabled = true;
+  try {
+    const { error } = await withTimeout(supabase.from('products').insert(data));
+    if (error) return status.textContent = '등록 실패: 관리자 권한과 입력 내용을 확인해주세요.';
+    form.reset();
+    status.textContent = '제품이 등록되었습니다.';
+    await loadProducts();
+  } catch {
+    status.textContent = '등록 연결이 지연되고 있습니다. 잠시 후 다시 시도해주세요.';
+  } finally {
+    button.disabled = false;
+  }
 }
 
 async function saveResource(event) {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = document.querySelector('#resourceStatus');
-  const data = Object.fromEntries(new FormData(event.currentTarget));
+  const button = form.querySelector('button[type="submit"]');
+  const data = Object.fromEntries(new FormData(form));
+  if (safeUrl(data.file_url) === '#') {
+    status.textContent = '자료 주소는 http:// 또는 https://로 시작해야 합니다.';
+    return;
+  }
   status.textContent = '자료를 등록하고 있습니다.';
-  const { error } = await supabase.from('resources').insert(data);
-  if (error) return status.textContent = '등록 실패: 자료 테이블과 권한 설정을 확인해주세요.';
-  event.currentTarget.reset();
-  status.textContent = '제조사 자료가 등록되었습니다.';
-  loadResources();
+  button.disabled = true;
+  try {
+    const { error } = await withTimeout(supabase.from('resources').insert(data));
+    if (error) return status.textContent = '등록 실패: 관리자 권한과 입력 내용을 확인해주세요.';
+    form.reset();
+    status.textContent = '제조사 자료가 등록되었습니다.';
+    await loadResources();
+  } catch {
+    status.textContent = '등록 연결이 지연되고 있습니다. 잠시 후 다시 시도해주세요.';
+  } finally {
+    button.disabled = false;
+  }
 }
 
 async function loadProducts() {
@@ -142,7 +181,7 @@ async function loadResources() {
   if (!data.length) return list.innerHTML = '<p>등록된 제조사 자료가 없습니다.</p>';
   list.innerHTML = data.map((item) => `
     <article class="resource-card">
-      <div><span class="maker">${escapeHtml(item.manufacturer)}</span><span class="resource-type">${escapeHtml(item.resource_type)}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description || '설명 없음')}</p><a href="${escapeAttribute(item.file_url)}" target="_blank" rel="noopener">자료 열기 →</a></div>
+      <div><span class="maker">${escapeHtml(item.manufacturer)}</span><span class="resource-type">${escapeHtml(item.resource_type)}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description || '설명 없음')}</p><a href="${safeUrl(item.file_url)}" target="_blank" rel="noopener">자료 열기 →</a></div>
       <button class="delete-resource" data-id="${item.id}">삭제</button>
     </article>`).join('');
   document.querySelectorAll('.delete-resource').forEach((button) => button.addEventListener('click', async () => {
@@ -168,7 +207,14 @@ async function loadInquiries() {
 }
 
 function escapeHtml(value = '') { return String(value).replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
-function escapeAttribute(value = '') { return escapeHtml(value); }
+function safeUrl(value = '') {
+  try {
+    const url = new URL(value);
+    return ['http:', 'https:'].includes(url.protocol) ? escapeHtml(url.href) : '#';
+  } catch {
+    return '#';
+  }
+}
 
 if (!supabase) renderLogin('Supabase 환경변수를 먼저 연결해주세요.');
 else supabase.auth.getSession().then(({ data }) => data.session ? renderDashboard() : renderLogin());
