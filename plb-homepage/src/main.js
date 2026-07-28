@@ -123,8 +123,9 @@ document.querySelector('#applyFinder').addEventListener('click', updateFinder);
 
 document.querySelector('#inquiryForm').addEventListener('submit', async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = document.querySelector('#formStatus');
-  const data = Object.fromEntries(new FormData(event.currentTarget));
+  const data = Object.fromEntries(new FormData(form));
   status.textContent = '문의 내용을 저장하고 있습니다.';
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 12000);
@@ -156,6 +157,6 @@ document.querySelector('#inquiryForm').addEventListener('submit', async (event) 
     status.textContent = `문의 저장 실패: ${message}`;
     return;
   }
-  event.currentTarget.reset();
+  form.reset();
   status.textContent = '문의가 정상적으로 접수되었습니다.';
 });
