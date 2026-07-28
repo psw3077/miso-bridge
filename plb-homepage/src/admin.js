@@ -1,4 +1,5 @@
 import './admin.css';
+import './admin-enhancements.css';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -38,6 +39,11 @@ async function renderDashboard() {
   if (!supabase) return renderLogin('Supabase 환경변수를 먼저 연결해주세요.');
   const { data: sessionData } = await supabase.auth.getSession();
   if (!sessionData.session) return renderLogin();
+  const { data: isAdmin, error: adminError } = await supabase.rpc('is_plb_admin');
+  if (adminError || !isAdmin) {
+    await supabase.auth.signOut();
+    return renderLogin('관리자 권한이 등록되지 않은 계정입니다.');
+  }
 
   app.innerHTML = `
     <main class="admin-shell">
@@ -162,9 +168,19 @@ async function loadInquiries() {
   list.innerHTML = data.map((item) => `
     <article class="inquiry-card">
       <div class="inquiry-top"><span class="badge ${item.status}">${item.status === 'new' ? '신규' : item.status}</span><time>${new Date(item.created_at).toLocaleString('ko-KR')}</time></div>
-      <h2>${escapeHtml(item.subject)}</h2><p class="company">${escapeHtml(item.company_name)} · ${escapeHtml(item.phone)}</p>
+      <h2>${escapeHtml(item.subject)}</h2><p class="company">${escapeHtml(item.company_name)} · ${escapeHtml(item.phone)}${item.email ? ` · ${escapeHtml(item.email)}` : ''}</p>
       <p class="message">${escapeHtml(item.message).replaceAll('\n', '<br>')}</p>
+      <div class="inquiry-actions"><button class="status-button" data-id="${item.id}" data-status="${item.status === 'done' ? 'new' : 'done'}">${item.status === 'done' ? '신규로 변경' : '처리 완료'}</button></div>
     </article>`).join('');
+  document.querySelectorAll('.status-button').forEach((button) => button.addEventListener('click', async () => {
+    button.disabled = true;
+    const { error: updateError } = await supabase.from('inquiries').update({ status: button.dataset.status }).eq('id', button.dataset.id);
+    if (updateError) {
+      button.disabled = false;
+      return alert('문의 상태를 변경하지 못했습니다.');
+    }
+    loadInquiries();
+  }));
 }
 
 function escapeHtml(value = '') { return String(value).replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }

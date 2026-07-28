@@ -13,6 +13,9 @@
 - 드라마 협찬 영역
 - Supabase 문의 저장 준비
 - PC·모바일 반응형 디자인
+- 모바일 햄버거 메뉴와 하단 빠른 상담
+- 문의 폼 검증·스팸 방지·이메일 대체 접수
+- 관리자 권한 분리와 문의 처리 상태 관리
 
 ## 실제 이미지 파일명
 
@@ -35,13 +38,15 @@ npm run dev
 ## Supabase 연결
 
 1. Supabase 프로젝트를 생성합니다.
-2. `supabase/001_initial_schema.sql`을 SQL Editor에서 실행합니다.
+2. `supabase/001_initial_schema.sql`부터 `005_admin_security_and_inquiry_email.sql`까지 번호 순서대로 SQL Editor에서 실행합니다.
 3. `.env.local`에 아래 값을 입력합니다.
 
 ```env
 VITE_SUPABASE_URL=프로젝트_URL
 VITE_SUPABASE_PUBLISHABLE_KEY=Publishable_Key
 ```
+
+4. Supabase Authentication에서 관리자 계정을 만든 뒤 `005_admin_security_and_inquiry_email.sql` 맨 아래의 관리자 등록 예시를 실제 관리자 이메일로 바꿔 실행합니다.
 
 ## Cloudflare Pages
 
@@ -51,10 +56,9 @@ VITE_SUPABASE_PUBLISHABLE_KEY=Publishable_Key
 - Build output directory: `dist`
 - Node.js version: `20`
 
-## 다음 작업
+## 아직 필요한 작업
 
-- 실제 이미지 4개를 `public/`에 등록
-- 관리자 로그인
-- 문의 관리 대시보드
-- 제품·제조사·자료실 관리
-- 실제 배포 연결
+- Supabase 프로젝트 생성과 환경변수 등록
+- SQL 5개 실행 및 관리자 계정 등록
+- Cloudflare Pages 또는 Vercel 실제 배포 연결
+- 카카오채널·네이버 클립·유튜브 실제 주소 연결
