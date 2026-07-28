@@ -126,25 +126,34 @@ document.querySelector('#inquiryForm').addEventListener('submit', async (event) 
   const status = document.querySelector('#formStatus');
   const data = Object.fromEntries(new FormData(event.currentTarget));
   status.textContent = '문의 내용을 저장하고 있습니다.';
-  if (!supabase) {
-    status.textContent = '온라인 접수 연결 전입니다. 전화 055-313-6778 또는 이메일로 문의해주세요.';
-    return;
-  }
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 12000);
-  let error = null;
+  let response;
   try {
-    ({ error } = await supabase.from('inquiries').insert(data).abortSignal(controller.signal));
-  } catch (requestError) {
-    error = requestError;
-  } finally {
-    window.clearTimeout(timeoutId);
-  }
-  if (error) {
-    const isTimeout = error.name === 'AbortError' || /abort/i.test(error.message || '');
+    response = await fetch('/api/inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal: controller.signal
+    });
+  } catch (error) {
+    const isTimeout = error.name === 'AbortError';
     status.textContent = isTimeout
       ? '저장 연결이 지연되고 있습니다. 잠시 후 다시 시도하거나 055-313-6778로 연락해주세요.'
       : `문의 저장 실패: ${error.message}`;
+    return;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+  if (!response.ok) {
+    let message = '문의 저장에 실패했습니다.';
+    try {
+      const result = await response.json();
+      if (result.message) message = result.message;
+    } catch {
+      // Keep the friendly fallback message.
+    }
+    status.textContent = `문의 저장 실패: ${message}`;
     return;
   }
   event.currentTarget.reset();
