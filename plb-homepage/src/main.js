@@ -19,7 +19,7 @@ const sampleResources = [
 app.innerHTML = `
 <header class="site-header">
   <a class="brand" href="#home"><span>PLB</span><b>주식회사 피엘비<small>INDUSTRIAL COATING PARTNER</small></b></a>
-  <nav><a href="#about">회사소개</a><a href="#business">사업분야</a><a href="#products">제품소개</a><a href="#finder">도료찾기</a><a href="#resources">자료실</a><a href="#channels">소식</a><a href="#contact">문의하기</a></nav>
+  <nav><a href="#about">회사소개</a><a href="#business">사업분야</a><a href="#solutions">전문안내</a><a href="#products">제품소개</a><a href="#finder">도료찾기</a><a href="#resources">자료실</a><a href="#channels">소식</a><a href="#contact">문의하기</a></nav>
 </header>
 <main>
   <section id="home" class="hero">
@@ -29,6 +29,16 @@ app.innerHTML = `
   </section>
   <section id="about" class="section two-column"><figure class="photo-card"><img src="/plb-ceo.jpg" alt="주식회사 피엘비 박상민 대표" onerror="this.style.display='none'"></figure><div><p class="eyebrow dark">CEO MESSAGE</p><h2>제품을 파는 회사를 넘어<br>현장을 이해하는 파트너</h2><blockquote>“고객의 작업 환경과 목적에 맞는 도료를 제안하는 것이 PLB의 경쟁력입니다.”</blockquote><p>주식회사 피엘비는 제품 선택부터 납품까지 신뢰할 수 있는 상담과 공급을 제공합니다.</p><div class="trust-list"><span>✓ 산업용 도료 전문</span><span>✓ 기업 맞춤 상담</span><span>✓ 제조사 공식자료</span><span>✓ 빠른 출고 대응</span></div></div></section>
   <section id="business" class="section dark-section"><p class="eyebrow">BUSINESS AREA</p><h2>PLB 사업분야</h2><div class="image-cards"><article><img src="/plb-warehouse-sub.jpg" alt="산업용 페인트" onerror="this.style.display='none'"><div><b>01</b><h3>산업용 페인트</h3><p>철재, 기계, 설비, 공장 시설용 도료</p></div></article><article><img src="/plb-warehouse-main.jpg" alt="분체도료" onerror="this.style.display='none'"><div><b>02</b><h3>분체도료·분체수지</h3><p>공정과 사용 환경에 맞는 분체도료</p></div></article><article><img src="/plb-warehouse-sub.jpg" alt="기능성 코팅" onerror="this.style.display='none'"><div><b>03</b><h3>기능성 코팅</h3><p>방청, 내열, 내화학 등 목적별 코팅</p></div></article><article><img src="/plb-warehouse-main.jpg" alt="기업 납품" onerror="this.style.display='none'"><div><b>04</b><h3>기업 납품</h3><p>재고와 출고를 기반으로 한 신속한 대응</p></div></article></div></section>
+  <section id="solutions" class="section seo-services">
+    <p class="eyebrow dark">PLB COATING GUIDE</p>
+    <h2>산업 현장별 도료 전문안내</h2>
+    <p class="section-copy">소재, 사용 환경과 필요한 기능에 맞는 도료 정보를 확인하고 PLB에 바로 상담할 수 있습니다.</p>
+    <div class="seo-service-grid">
+      <a href="/industrial-paint/"><span>INDUSTRIAL PAINT</span><h3>김해 산업용 페인트</h3><p>철재·산업기계·공장 설비에 사용하는 공업용 페인트와 기업 납품 안내</p><b>자세히 보기 →</b></a>
+      <a href="/powder-coating/"><span>POWDER COATING</span><h3>분체도료·분체수지</h3><p>금속 제품의 내구성과 외관을 위한 분체도료 선택 및 납품 안내</p><b>자세히 보기 →</b></a>
+      <a href="/protective-coating/"><span>PROTECTIVE COATING</span><h3>방청·내열·기능성 코팅</h3><p>부식, 고온, 화학 환경에 대응하는 기능성 도료 상담 안내</p><b>자세히 보기 →</b></a>
+    </div>
+  </section>
   <section id="stock" class="section two-column stock-section"><figure class="warehouse-photo"><img src="/plb-warehouse-sub.jpg" alt="PLB 창고 내부" onerror="this.style.display='none'"></figure><div><p class="eyebrow dark">STOCK & DELIVERY</p><h2>안정적인 재고,<br>신속한 납품</h2><p>다양한 산업용 도료를 체계적으로 보관하고 고객의 생산 일정에 맞춰 안정적으로 공급합니다.</p><ol class="process"><li><b>01</b><span>문의 접수와 사용 환경 확인</span></li><li><b>02</b><span>제품 및 제조사 상담</span></li><li><b>03</b><span>견적·재고·납기 확인</span></li><li><b>04</b><span>출고 및 기업 납품</span></li></ol></div></section>
   <section id="products" class="section products-section"><p class="eyebrow dark">PRODUCT CATALOG</p><h2>제품소개</h2><div class="product-tools"><input id="productSearch" type="search" placeholder="제품명·용도·제조사 검색"><select id="makerFilter"><option value="">전체 제조사</option><option>KCC</option><option>삼화페인트</option><option>조광페인트</option><option>제비스코</option></select></div><div id="productGrid" class="product-grid"><p>제품 정보를 불러오고 있습니다.</p></div></section>
   <section id="finder" class="section"><p class="eyebrow dark">PAINT FINDER</p><h2>용도에 맞는 도료 찾기</h2><div class="finder-grid"><div class="finder-form"><label>사용 소재<select id="material"><option>철재</option><option>알루미늄</option><option>스테인리스</option><option>플라스틱</option></select></label><label>필요 기능<select id="function"><option>방청</option><option>내열</option><option>내화학</option><option>외관 마감</option></select></label><label>사용 환경<select id="environment"><option>실내</option><option>실외</option><option>고온</option><option>습기·부식</option></select></label><button id="applyFinder" class="primary button">상담 문구 만들기</button></div><div class="finder-result"><small>PLB 상담 준비 결과</small><h3 id="finderTitle">철재용 방청 도료 상담</h3><p id="finderDescription">철재 · 방청 · 실내 조건으로 제품 및 제조사 상담을 준비합니다.</p></div></div></section>
