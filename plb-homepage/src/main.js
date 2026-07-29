@@ -34,9 +34,9 @@ app.innerHTML = `
     <h2>산업 현장별 도료 전문안내</h2>
     <p class="section-copy">소재, 사용 환경과 필요한 기능에 맞는 도료 정보를 확인하고 PLB에 바로 상담할 수 있습니다.</p>
     <div class="seo-service-grid">
-      <a href="/industrial-paint/"><span>INDUSTRIAL PAINT</span><h3>김해 산업용 페인트</h3><p>철재·산업기계·공장 설비에 사용하는 공업용 페인트와 기업 납품 안내</p><b>자세히 보기 →</b></a>
-      <a href="/powder-coating/"><span>POWDER COATING</span><h3>분체도료·분체수지</h3><p>금속 제품의 내구성과 외관을 위한 분체도료 선택 및 납품 안내</p><b>자세히 보기 →</b></a>
-      <a href="/protective-coating/"><span>PROTECTIVE COATING</span><h3>방청·내열·기능성 코팅</h3><p>부식, 고온, 화학 환경에 대응하는 기능성 도료 상담 안내</p><b>자세히 보기 →</b></a>
+      <a href="/industrial-paint.html"><span>INDUSTRIAL PAINT</span><h3>김해 산업용 페인트</h3><p>철재·산업기계·공장 설비에 사용하는 공업용 페인트와 기업 납품 안내</p><b>자세히 보기 →</b></a>
+      <a href="/powder-coating.html"><span>POWDER COATING</span><h3>분체도료·분체수지</h3><p>금속 제품의 내구성과 외관을 위한 분체도료 선택 및 납품 안내</p><b>자세히 보기 →</b></a>
+      <a href="/protective-coating.html"><span>PROTECTIVE COATING</span><h3>방청·내열·기능성 코팅</h3><p>부식, 고온, 화학 환경에 대응하는 기능성 도료 상담 안내</p><b>자세히 보기 →</b></a>
     </div>
   </section>
   <section id="stock" class="section two-column stock-section"><figure class="warehouse-photo"><img src="/plb-warehouse-sub.jpg" alt="PLB 창고 내부" onerror="this.style.display='none'"></figure><div><p class="eyebrow dark">STOCK & DELIVERY</p><h2>안정적인 재고,<br>신속한 납품</h2><p>다양한 산업용 도료를 체계적으로 보관하고 고객의 생산 일정에 맞춰 안정적으로 공급합니다.</p><ol class="process"><li><b>01</b><span>문의 접수와 사용 환경 확인</span></li><li><b>02</b><span>제품 및 제조사 상담</span></li><li><b>03</b><span>견적·재고·납기 확인</span></li><li><b>04</b><span>출고 및 기업 납품</span></li></ol></div></section>
