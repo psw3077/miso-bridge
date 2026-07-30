@@ -19,7 +19,7 @@ const sampleResources = [
 app.innerHTML = `
 <header class="site-header">
   <a class="brand" href="#home"><span>PLB</span><b>주식회사 피엘비<small>INDUSTRIAL COATING PARTNER</small></b></a>
-  <nav><a href="#about">회사소개</a><a href="#business">사업분야</a><a href="#solutions">전문안내</a><a href="#products">제품소개</a><a href="#finder">도료찾기</a><a href="#resources">자료실</a><a href="#channels">소식</a><a href="#contact">문의하기</a></nav>
+  <nav><a href="#about">회사소개</a><a href="#business">사업분야</a><a href="#delivery-cases">납품사례</a><a href="#solutions">전문안내</a><a href="#products">제품소개</a><a href="#finder">도료찾기</a><a href="#resources">자료실</a><a href="#channels">소식</a><a href="#contact">문의하기</a></nav>
 </header>
 <main>
   <section id="home" class="hero">
@@ -40,6 +40,31 @@ app.innerHTML = `
     </div>
   </section>
   <section id="stock" class="section two-column stock-section"><figure class="warehouse-photo"><img src="/plb-warehouse-sub.jpg" alt="PLB 창고 내부" onerror="this.style.display='none'"></figure><div><p class="eyebrow dark">STOCK & DELIVERY</p><h2>안정적인 재고,<br>신속한 납품</h2><p>다양한 산업용 도료를 체계적으로 보관하고 고객의 생산 일정에 맞춰 안정적으로 공급합니다.</p><ol class="process"><li><b>01</b><span>문의 접수와 사용 환경 확인</span></li><li><b>02</b><span>제품 및 제조사 상담</span></li><li><b>03</b><span>견적·재고·납기 확인</span></li><li><b>04</b><span>출고 및 기업 납품</span></li></ol></div></section>
+
+  <section id="delivery-cases" class="section delivery-cases-section">
+    <p class="eyebrow dark">DELIVERY CASES</p>
+    <h2>실제 제품 출고·납품 사례</h2>
+    <p class="section-copy">산업용 페인트와 도료 제품을 현장에서 안전하게 상차하고, 기업 고객의 일정에 맞춰 신속하게 공급합니다.</p>
+    <div class="delivery-case-grid">
+      <figure class="delivery-case">
+        <img src="/plb-delivery-loading.webp" alt="주식회사 피엘비 김해 산업용 페인트 제품 상차 및 기업 납품" loading="lazy">
+        <figcaption><span>PRODUCT LOADING</span><h3>제품 상차 및 출고 준비</h3><p>주문 제품의 수량과 상태를 확인한 뒤 안전하게 상차합니다.</p></figcaption>
+      </figure>
+      <figure class="delivery-case">
+        <img src="/plb-delivery-truck.webp" alt="주식회사 피엘비 KCC 페인트 제품 차량 출고 사례" loading="lazy">
+        <figcaption><span>FAST DELIVERY</span><h3>납기 일정에 맞춘 출고</h3><p>재고와 납기 조건을 확인하고 고객 일정에 맞춰 출고합니다.</p></figcaption>
+      </figure>
+      <figure class="delivery-case">
+        <img src="/plb-delivery-forklift.webp" alt="주식회사 피엘비 지게차를 이용한 산업용 도료 안전 상차" loading="lazy">
+        <figcaption><span>SAFE HANDLING</span><h3>안전한 지게차 상차</h3><p>도료 제품을 안전하게 취급하며 출고 전 과정을 꼼꼼히 관리합니다.</p></figcaption>
+      </figure>
+      <figure class="delivery-case">
+        <img src="/plb-delivery-operation.webp" alt="주식회사 피엘비 기업 납품을 위한 산업용 페인트 출고 작업" loading="lazy">
+        <figcaption><span>B2B SUPPLY</span><h3>기업 맞춤 납품 대응</h3><p>제품, 수량과 현장 조건에 맞춰 기업 납품 상담을 제공합니다.</p></figcaption>
+      </figure>
+    </div>
+    <div class="delivery-callout"><div><b>기업 납품 상담</b><span>제품·수량·납기 조건을 알려주시면 재고와 출고 일정을 확인해드립니다.</span></div><a href="#contact">납품 문의하기 →</a></div>
+  </section>
   <section id="products" class="section products-section"><p class="eyebrow dark">PRODUCT CATALOG</p><h2>제품소개</h2><div class="product-tools"><input id="productSearch" type="search" placeholder="제품명·용도·제조사 검색"><select id="makerFilter"><option value="">전체 제조사</option><option>KCC</option><option>삼화페인트</option><option>조광페인트</option><option>제비스코</option></select></div><div id="productGrid" class="product-grid"><p>제품 정보를 불러오고 있습니다.</p></div></section>
   <section id="finder" class="section"><p class="eyebrow dark">PAINT FINDER</p><h2>용도에 맞는 도료 찾기</h2><div class="finder-grid"><div class="finder-form"><label>사용 소재<select id="material"><option>철재</option><option>알루미늄</option><option>스테인리스</option><option>플라스틱</option></select></label><label>필요 기능<select id="function"><option>방청</option><option>내열</option><option>내화학</option><option>외관 마감</option></select></label><label>사용 환경<select id="environment"><option>실내</option><option>실외</option><option>고온</option><option>습기·부식</option></select></label><button id="applyFinder" class="primary button">상담 문구 만들기</button></div><div class="finder-result"><small>PLB 상담 준비 결과</small><h3 id="finderTitle">철재용 방청 도료 상담</h3><p id="finderDescription">철재 · 방청 · 실내 조건으로 제품 및 제조사 상담을 준비합니다.</p></div></div></section>
   <section id="resources" class="section resource-section"><p class="eyebrow dark">TECHNICAL LIBRARY</p><h2>제조사 기술자료실</h2><p class="section-copy">TDS, MSDS, 카탈로그와 제조사 공식자료를 한곳에서 확인할 수 있습니다.</p><div class="resource-tools"><select id="resourceMakerFilter"><option value="">전체 제조사</option><option>KCC</option><option>삼화페인트</option><option>조광페인트</option><option>제비스코</option></select><select id="resourceTypeFilter"><option value="">전체 자료</option><option>TDS</option><option>MSDS</option><option>카탈로그</option><option>공식 홈페이지</option></select></div><div id="resourceGrid" class="resource-grid"><p>자료를 불러오고 있습니다.</p></div></section>
