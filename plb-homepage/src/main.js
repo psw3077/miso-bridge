@@ -18,7 +18,7 @@ const sampleResources = [
 
 app.innerHTML = `
 <header class="site-header">
-  <a class="brand" href="#home"><span>PLB</span><b>주식회사 피엘비<small>INDUSTRIAL COATING PARTNER</small></b></a>
+  <a class="brand" href="#home"><img class="brand-logo" src="/plb-logo-mark.webp" alt="주식회사 피엘비 로고"><b>주식회사 피엘비<small>INDUSTRIAL COATING PARTNER</small></b></a>
   <nav><a href="#about">회사소개</a><a href="#business">사업분야</a><a href="#delivery-cases">납품사례</a><a href="#solutions">전문안내</a><a href="#products">제품소개</a><a href="#finder">도료찾기</a><a href="#resources">자료실</a><a href="#channels">소식</a><a href="#contact">문의하기</a></nav>
 </header>
 <main>
