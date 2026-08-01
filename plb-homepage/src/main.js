@@ -41,6 +41,50 @@ app.innerHTML = `
   </section>
   <section id="stock" class="section two-column stock-section"><figure class="warehouse-photo"><img src="/plb-warehouse-sub.jpg" alt="PLB 창고 내부" onerror="this.style.display='none'"></figure><div><p class="eyebrow dark">STOCK & DELIVERY</p><h2>전국을 연결하는 재고,<br>신속한 납품</h2><p>다양한 산업용 도료를 체계적으로 보관하고 전국 고객의 생산 일정에 맞춰 안정적으로 공급합니다.</p><ol class="process"><li><b>01</b><span>문의 접수와 사용 환경 확인</span></li><li><b>02</b><span>제품 및 제조사 상담</span></li><li><b>03</b><span>견적·재고·납기 확인</span></li><li><b>04</b><span>전국 출고 및 기업 납품</span></li></ol></div></section>
 
+  <section id="nationwide" class="section nationwide-section">
+    <p class="eyebrow dark">NATIONWIDE DELIVERY</p>
+    <h2>대한민국 전 지역 납품</h2>
+    <p class="section-copy">
+      김해 물류 거점을 기반으로 서울·경기부터 제주까지 산업용 페인트와 도료를 공급합니다.
+      제품 종류, 수량, 납기와 운송 조건은 상담을 통해 빠르게 확인해 드립니다.
+    </p>
+
+    <div class="region-grid" aria-label="PLB 전국 납품 가능 지역">
+      <article class="region-card">
+        <b>수도권</b>
+        <span>서울 · 경기 · 인천</span>
+      </article>
+      <article class="region-card">
+        <b>충청권</b>
+        <span>대전 · 세종 · 충북 · 충남</span>
+      </article>
+      <article class="region-card">
+        <b>호남권</b>
+        <span>광주 · 전북 · 전남</span>
+      </article>
+      <article class="region-card">
+        <b>영남권</b>
+        <span>부산 · 대구 · 울산 · 경북 · 경남</span>
+      </article>
+      <article class="region-card">
+        <b>강원권</b>
+        <span>강원 전 지역</span>
+      </article>
+      <article class="region-card">
+        <b>제주권</b>
+        <span>제주 전 지역</span>
+      </article>
+    </div>
+
+    <div class="nationwide-note">
+      <div>
+        <strong>전국 기업 납품 상담</strong>
+        <span>도서·산간 지역과 대량 주문은 운송 조건을 별도로 확인합니다.</span>
+      </div>
+      <a href="/nationwide-delivery/">전국 납품 자세히 보기 →</a>
+    </div>
+  </section>
+
   <section id="delivery-cases" class="section delivery-cases-section">
     <p class="eyebrow dark">DELIVERY CASES</p>
     <h2>실제 제품 출고·납품 사례</h2>
