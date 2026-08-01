@@ -46,17 +46,17 @@ const keywordGroups = [
     ]
   },
   {
-    title: '김해·경남 페인트 납품',
-    description: '김해와 경남 지역 기업의 제품, 수량, 색상과 납기 조건 상담',
+    title: '전국 페인트·도료 납품',
+    description: '대한민국 전 지역의 기업과 산업현장에 제품, 수량, 색상 및 납기 조건을 맞춰 공급합니다',
     links: [
-      ['#김해페인트', '/kcc-paint/'],
-      ['#김해KCC페인트', '/kcc-paint/'],
-      ['#KCC페인트김해', '/kcc-paint/'],
-      ['#김해산업용페인트', '/industrial-paint/'],
-      ['#경남산업용도료', '/industrial-paint/'],
-      ['#페인트도매', '#contact'],
-      ['#도료납품', '#contact'],
-      ['#기업도료납품', '#contact']
+      ['#전국페인트납품', '/nationwide-delivery/'],
+      ['#전국도료납품', '/nationwide-delivery/'],
+      ['#전국산업용페인트', '/nationwide-delivery/'],
+      ['#전국산업용도료', '/nationwide-delivery/'],
+      ['#산업용페인트납품', '/industrial-paint/'],
+      ['#기업도료납품', '/nationwide-delivery/'],
+      ['#페인트도매', '/nationwide-delivery/'],
+      ['#김해페인트', '/kcc-paint/']
     ]
   },
   {
