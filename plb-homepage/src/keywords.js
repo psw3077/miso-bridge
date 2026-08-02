@@ -23,6 +23,10 @@ const keywordGroups = [
     links: [
       ['#분체도료', '/powder-coating/'],
       ['#분체수지', '/powder-coating/'],
+      ['#분체도장', '/powder-coating/'],
+      ['#분체도장업체', '/powder-coating/'],
+      ['#분체도장회사', '/powder-coating/'],
+      ['#분체도장공장', '/powder-coating/'],
       ['#방청도료', '/protective-coating/'],
       ['#내열도료', '/protective-coating/'],
       ['#내화학도료', '/protective-coating/'],
@@ -56,6 +60,9 @@ const keywordGroups = [
       ['#산업용페인트납품', '/industrial-paint/'],
       ['#기업도료납품', '/nationwide-delivery/'],
       ['#페인트도매', '/nationwide-delivery/'],
+      ['#도료도매', '/nationwide-delivery/'],
+      ['#페인트대리점', '/nationwide-delivery/'],
+      ['#산업용페인트도매', '/industrial-paint/'],
       ['#김해페인트', '/kcc-paint/']
     ]
   },
