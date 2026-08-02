@@ -1,9 +1,0 @@
-실제 이미지 업로드 위치입니다.
-
-필수 파일명:
-- plb-warehouse-main.png
-- plb-warehouse-sub.png
-- plb-ceo.jpg
-- plb-sponsor.png
-
-현재 코드는 위 파일명을 자동으로 불러오도록 준비되어 있습니다.
