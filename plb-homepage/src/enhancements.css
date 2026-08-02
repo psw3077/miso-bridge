@@ -1,0 +1,183 @@
+.menu-toggle {
+  display: none;
+  width: 46px;
+  height: 46px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 2px;
+  margin: 5px 0;
+  border-radius: 2px;
+  background: var(--navy);
+}
+
+.site-header nav a {
+  position: relative;
+}
+
+.site-header nav a::after {
+  position: absolute;
+  right: 100%;
+  bottom: -8px;
+  left: 0;
+  height: 2px;
+  background: var(--orange);
+  content: "";
+  transition: right .25s;
+}
+
+.site-header nav a:hover::after,
+.site-header nav a:focus-visible::after {
+  right: 0;
+}
+
+.contact-section label {
+  color: rgba(255, 255, 255, .86);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.contact-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.contact-shortcuts a {
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.privacy-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.privacy-check input {
+  width: auto !important;
+  margin: 4px 0 0 !important;
+}
+
+.form-trap {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+@media (max-width: 980px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .site-header nav {
+    position: absolute;
+    top: 76px;
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    padding: 14px 5% 22px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    box-shadow: 0 18px 35px rgba(5, 24, 42, .12);
+  }
+
+  .site-header nav.is-open {
+    display: flex;
+  }
+
+  .site-header nav a {
+    padding: 13px 4px;
+    border-bottom: 1px solid #edf1f4;
+  }
+}
+
+@media (max-width: 620px) {
+  body {
+    padding-bottom: 58px;
+  }
+
+  .site-header {
+    height: 68px;
+    padding: 0 4%;
+  }
+
+  .site-header nav {
+    top: 68px;
+  }
+
+  .brand b {
+    font-size: 14px;
+  }
+
+  .brand span {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero {
+    min-height: 640px;
+  }
+
+  .hero-copy {
+    padding: 80px 0 40px;
+  }
+
+  h1 {
+    font-size: clamp(38px, 12vw, 48px);
+    letter-spacing: -2px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .section {
+    width: min(92%, 1180px);
+    padding: 68px 0;
+  }
+
+  .image-cards article {
+    min-height: 290px;
+  }
+
+  .contact-section {
+    width: 92%;
+    margin: 35px auto;
+    padding: 25px;
+  }
+
+  .floating-contact {
+    z-index: 20;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-image {
+    animation: none;
+  }
+
+  .image-cards img {
+    transition: none;
+  }
+}
