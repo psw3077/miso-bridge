@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import AdminDashboard from "./AdminDashboard";
+import MisoAdmin from "./MisoAdmin";
 import "./styles.css";
 import "./v2.css";
 
@@ -9,6 +9,6 @@ const isAdminPage = new URLSearchParams(window.location.search).get("admin") ===
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    {isAdminPage ? <AdminDashboard /> : <App />}
+    {isAdminPage ? <MisoAdmin /> : <App />}
   </React.StrictMode>,
 );
