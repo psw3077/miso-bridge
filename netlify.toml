@@ -1,15 +1,14 @@
 [build]
-  base = "plb-homepage"
   command = "npm run build"
-  publish = "plb-homepage/dist"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
 
 [[redirects]]
   from = "/admin"
-  to = "/admin.html"
-  status = 200
+  to = "/?admin=1"
+  status = 302
 
 [[redirects]]
   from = "/*"
