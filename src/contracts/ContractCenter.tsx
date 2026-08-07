@@ -174,27 +174,26 @@ export default function ContractCenter() {
     e.preventDefault();
     setStatus("");
     if (!form.partyName || !form.phone) return setStatus("이름과 전화번호를 입력해 주세요.");
-    if (!supabase) return setStatus("Supabase 환경변수 설정이 필요합니다.");
+    if (!supabase) return setStatus("Supabase 연결 설정이 필요합니다.");
 
-    const publicToken = crypto.randomUUID();
-    const result = await supabase.from("miso_contracts").insert({
-      contract_type: form.contractType,
-      party_name: form.partyName,
-      phone: form.phone,
-      address: form.address || null,
-      business_number: form.businessNumber || null,
-      notes: form.notes || null,
-      signature_data: signature || null,
-      public_token: publicToken,
-      status: signature ? "signed" : "sent",
-      document_text: form.contractType === "special" ? specialAgreement : null,
-      signed_at: signature ? new Date().toISOString() : null,
-    }).select("id, public_token, status").single();
+    const result = await supabase.rpc("create_miso_contract", {
+      p_contract_type: form.contractType,
+      p_party_name: form.partyName,
+      p_phone: form.phone,
+      p_address: form.address || null,
+      p_business_number: form.businessNumber || null,
+      p_notes: form.notes || null,
+      p_document_text: form.contractType === "special" ? specialAgreement : null,
+      p_signature_data: signature || null,
+    });
 
     if (result.error) return setStatus(`저장 오류: ${result.error.message}`);
-    const shareUrl = `${window.location.origin}/?contracts=1&contract=${result.data.public_token}`;
-    setShareToken(result.data.public_token);
-    setRemoteStatus(result.data.status as ContractStatus);
+    const row = Array.isArray(result.data) ? result.data[0] : result.data;
+    if (!row?.public_token) return setStatus("서명 링크 생성에 실패했습니다.");
+
+    const shareUrl = `${window.location.origin}/?contracts=1&contract=${row.public_token}`;
+    setShareToken(row.public_token);
+    setRemoteStatus(row.status as ContractStatus);
     await navigator.clipboard?.writeText(shareUrl).catch(() => undefined);
     setStatus(`저장 완료. 서명 링크가 복사되었습니다: ${shareUrl}`);
   }
