@@ -191,7 +191,8 @@ export default function ContractCenter() {
     const row = Array.isArray(result.data) ? result.data[0] : result.data;
     if (!row?.public_token) return setStatus("서명 링크 생성에 실패했습니다.");
 
-    const shareUrl = `${window.location.origin}/?contracts=1&contract=${row.public_token}`;
+    const basePath = import.meta.env.BASE_URL || "/";
+    const shareUrl = `${window.location.origin}${basePath}?contracts=1&contract=${row.public_token}`;
     setShareToken(row.public_token);
     setRemoteStatus(row.status as ContractStatus);
     await navigator.clipboard?.writeText(shareUrl).catch(() => undefined);
