@@ -38,17 +38,26 @@
 - 블로그·카카오·인스타그램·페이스북 연결
 - 모바일 빠른 메뉴 유지
 - 일반 Chat/Work/Codex 공통 GitHub 원본 운영
+- Supabase `MISO ONE` 프로젝트 실제 연결 확인
+- `partner_applications`, `consulting_inquiries` 실제 테이블 생성
+- `business-licenses` 비공개 Storage 버킷 생성
+- 신규 거래/상담 공개 INSERT 정책 및 관리자 전용 조회·상태변경 RLS 적용
+- 상담 유형(`consulting_type`) DB 컬럼 및 인덱스 적용
+- 관리자 RLS 성능 최적화 적용
 
 ## 다음 구현 우선순위
-1. Supabase에서 `supabase/miso_one_growth_services.sql` 실행
-2. GitHub Actions typecheck/build 결과 확인 및 오류 수정
-3. 제품 이미지·제품별 상세 SEO 페이지 구조 확장
-4. 개인정보처리방침/이용약관 실제 페이지 추가
-5. 사이트맵·구조화데이터·검색엔진 최적화 강화
-6. 모바일 실기기 전체 QA
-7. 무료 호스팅 공개 URL 최종 확인
-8. 독립 도메인 연결
-9. 마지막 단계에서 아임웹 '주류창업/고객센터' 버튼을 독립 홈페이지 상담 경로로 연결
+1. GitHub Actions typecheck/build 결과 확인 및 오류 수정
+2. 제품 이미지·제품별 상세 SEO 페이지 구조 확장
+3. 개인정보처리방침/이용약관 실제 페이지 추가
+4. 사이트맵·구조화데이터·검색엔진 최적화 강화
+5. 모바일 실기기 전체 QA
+6. 무료 호스팅 공개 URL 최종 확인
+7. 독립 도메인 연결
+8. 마지막 단계에서 아임웹 '주류창업/고객센터' 버튼을 독립 홈페이지 상담 경로로 연결
+
+## 보안 메모
+- 이번 상담/신규거래 DB는 RLS와 비공개 사업자등록증 Storage를 적용했다.
+- 기존 전자계약 기능의 `miso_contracts` 및 SECURITY DEFINER 함수에는 Supabase Advisor 경고가 별도로 남아 있어 전자계약 보안 점검 단계에서 정리한다.
 
 ## 주의
 - Lovable 유료 의존을 피한다.
