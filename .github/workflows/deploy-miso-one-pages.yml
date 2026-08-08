@@ -2,7 +2,7 @@ name: Deploy MISO ONE to GitHub Pages
 
 on:
   push:
-    branches: ["main", "miso-one-contracts"]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -18,27 +18,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MISO ONE branch
+      - name: Checkout latest main
         uses: actions/checkout@v4
-        with:
-          ref: miso-one-contracts
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
+
       - name: Install
         run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
       - name: Build
         run: npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+
   deploy:
     environment:
       name: github-pages
