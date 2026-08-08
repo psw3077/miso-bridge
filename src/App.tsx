@@ -8,6 +8,7 @@ import { isSupabaseConfigured, supabase } from "./lib/supabase";
 import { categories, products } from "./misoOneData";
 import "./product-cards.css";
 import "./seo-guides.css";
+import "./mobile-qa.css";
 
 type FormKind = "partner" | "consulting" | "franchise" | null;
 type Notice = { type: "ok" | "error"; text: string } | null;
