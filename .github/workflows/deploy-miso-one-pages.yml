@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_BASE_PATH: /miso-bridge/
+      SITE_URL: https://psw3077.github.io/miso-bridge
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
