@@ -2,12 +2,12 @@ import { FormEvent, useMemo, useState } from "react";
 import {
   ArrowRight, Beer, Building2, CheckCircle2, FileUp, Grape, Menu,
   MessageCircle, Phone, Search, ShieldCheck, Sparkles, Store, Wine, X,
-  BadgeHelp, Handshake, RefreshCw,
+  BadgeHelp, Handshake,
 } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 import { categories, products } from "./misoOneData";
 
-type FormKind = "partner" | "consulting" | "closure" | "franchise" | null;
+type FormKind = "partner" | "consulting" | "franchise" | null;
 type Notice = { type: "ok" | "error"; text: string } | null;
 
 const links = {
@@ -19,7 +19,6 @@ const links = {
 
 const consultingLabels: Record<Exclude<FormKind, "partner" | null>, string> = {
   consulting: "창업·자금",
-  closure: "폐업·업종변경",
   franchise: "프랜차이즈·업체연결",
 };
 
@@ -111,7 +110,6 @@ export default function App() {
           funding_needed: data.get("funding_needed"),
           inquiry: [
             data.get("partner_needs") ? `필요 연결: ${data.get("partner_needs")}` : "",
-            data.get("closure_timing") ? `폐업/변경 예정: ${data.get("closure_timing")}` : "",
             String(data.get("inquiry") || ""),
           ].filter(Boolean).join("\n"),
         });
@@ -159,7 +157,7 @@ export default function App() {
           <div className="hero-copy">
             <div className="eyebrow"><ShieldCheck size={17}/> 주류 공급부터 창업·성장까지 ONE STOP</div>
             <h1>술보다<br/><em>장사를 먼저 생각합니다.</em></h1>
-            <p>국내주류·수입주류·중국주류·생맥주 공급부터 신규거래, 창업자금, 폐업·업종변경, 프랜차이즈·전문업체 연결까지.<br/>미소주류는 업소의 매출과 성장을 함께 만드는 비즈니스 파트너입니다.</p>
+            <p>국내주류·수입주류·중국주류·생맥주 공급부터 신규거래, 창업자금, 업종변경, 프랜차이즈·전문업체 연결까지.<br/>미소주류는 업소의 매출과 성장을 함께 만드는 비즈니스 파트너입니다.</p>
             <div className="hero-actions">
               <button className="button primary" onClick={() => openForm("partner")}>신규 거래 신청 <ArrowRight size={18}/></button>
               <button className="button secondary" onClick={() => document.getElementById("liquor-search")?.scrollIntoView({ behavior: "smooth" })}><Search size={18}/> AI 주류검색</button>
@@ -177,7 +175,7 @@ export default function App() {
         <section className="miso-proof-strip">
           <span><CheckCircle2/> 국내·수입·중국주류 전문</span>
           <span><CheckCircle2/> 생맥주 시스템 지원</span>
-          <span><CheckCircle2/> 창업·자금·폐업 상담</span>
+          <span><CheckCircle2/> 창업·자금·업종변경 상담</span>
           <span><CheckCircle2/> 프랜차이즈·전문업체 연결</span>
         </section>
 
@@ -257,17 +255,16 @@ export default function App() {
         </section>
 
         <section className="section growth-services" id="growth-services">
-          <div className="section-heading"><span className="section-kicker">MISO BUSINESS CONNECT</span><h2>가게의 시작부터 변화와 재도전까지.</h2><p>미소주류가 직접 처리하지 않는 분야는 필요한 전문업체와 연결하고, 최종적으로 매장 운영과 주류 거래까지 이어지도록 돕습니다.</p></div>
+          <div className="section-heading"><span className="section-kicker">MISO BUSINESS CONNECT</span><h2>가게의 시작과 성장을 함께 연결합니다.</h2><p>미소주류가 직접 처리하지 않는 분야는 필요한 전문업체와 연결하고, 최종적으로 매장 운영과 주류 거래까지 이어지도록 돕습니다.</p></div>
           <div className="growth-grid">
             <article><span><Sparkles/></span><h3>창업·자금 상담</h3><p>신규창업, 업종선택, 예상예산, 정책자금·금융상담 방향을 함께 점검합니다.</p><button onClick={() => openForm("consulting")}>상담 신청</button></article>
-            <article><span><RefreshCw/></span><h3>폐업·업종변경</h3><p>폐업, 원상복구, 집기정리부터 새로운 업종으로 전환하는 상담까지 연결합니다.</p><button onClick={() => openForm("closure")}>폐업·변경 상담</button></article>
             <article><span><Handshake/></span><h3>프랜차이즈·업체연결</h3><p>인테리어, 주방설비, 세무·노무, 마케팅, 메뉴·밀키트 등 필요한 파트너를 연결합니다.</p><button onClick={() => openForm("franchise")}>업체 연결 상담</button></article>
             <article><span><BadgeHelp/></span><h3>주류회사 변경 상담</h3><p>기존 거래 조건과 필요한 주류 구성을 확인하고 신규 거래 가능 여부를 상담합니다.</p><button onClick={() => openForm("partner")}>거래 변경 상담</button></article>
           </div>
         </section>
 
         <section className="section about" id="about">
-          <div className="about-copy"><span className="section-kicker">ABOUT MISO</span><h2>좋은 공급이<br/>좋은 사업을 만듭니다.</h2><p>미소주류는 단순히 술을 공급하는 회사가 아니라 거래처의 성장을 함께 고민하는 파트너를 지향합니다. 국내·수입·중국주류와 생맥주 공급, 신규 거래, 창업·자금 상담, 폐업·업종변경과 전문업체 연결을 하나로 이어갑니다.</p></div>
+          <div className="about-copy"><span className="section-kicker">ABOUT MISO</span><h2>좋은 공급이<br/>좋은 사업을 만듭니다.</h2><p>미소주류는 단순히 술을 공급하는 회사가 아니라 거래처의 성장을 함께 고민하는 파트너를 지향합니다. 국내·수입·중국주류와 생맥주 공급, 신규 거래, 창업·자금 상담, 업종변경과 전문업체 연결을 하나로 이어갑니다.</p></div>
           <div className="quote-card"><div className="quote-mark">“</div><p>술 파는 회사를 넘어<br/>장사 잘되게 만드는 회사로.</p><span>(주)미소주류 · MISO ONE</span></div>
         </section>
 
@@ -321,8 +318,8 @@ export default function App() {
                 <Field label="이름" name="name" required />
                 <Field label="전화번호" name="phone" type="tel" required />
                 <Field label="지역" name="region" required />
-                <Field label={formKind === "closure" ? "현재/변경 희망 업종" : "희망 업종"} name="business_type" required />
-                {formKind === "closure" ? <Field label="폐업·변경 예정 시기" name="closure_timing" /> : <Field label="창업 예정 시기" name="opening_timing" />}
+                <Field label="희망 업종" name="business_type" required />
+                <Field label="창업 예정 시기" name="opening_timing" />
                 <Field label="예상 예산" name="budget" />
                 {formKind === "franchise" && <Field label="필요한 업체·서비스" name="partner_needs" full />}
                 <label className="field"><span>자금상담 필요 여부</span><select name="funding_needed" defaultValue="상담 희망"><option>상담 희망</option><option>필요 없음</option><option>아직 모름</option></select></label>
