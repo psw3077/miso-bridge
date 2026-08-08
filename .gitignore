@@ -4,3 +4,12 @@ dist
 .env.local
 .DS_Store
 *.log
+
+# Generated during prebuild
+public/products/
+public/change-liquor-company/
+public/liquor-product-search/
+public/liquor-wholesale-company/
+public/startup-consulting-guide/
+public/startup-funding/
+public/sitemap.xml
