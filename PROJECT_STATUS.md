@@ -26,6 +26,8 @@
 - 인스타그램: `https://www.instagram.com/misojooryu/`
 - 카카오채널: `http://pf.kakao.com/_xnaXJn`
 - 페이스북: `https://www.facebook.com/100069034002808`
+- 창업·자금 상담 직접 경로: `/startup-consulting`
+- 신규 거래 직접 경로: `/new-partner`
 
 ## 2026-08-08 반영 완료
 - 신규 거래 신청 + 사업자등록증 비공개 업로드 코드
@@ -48,16 +50,25 @@
 - 신규 거래/상담 공개 INSERT 정책 및 관리자 전용 조회·상태변경 RLS 적용
 - 상담 유형(`consulting_type`) DB 컬럼 및 인덱스 적용
 - 관리자 RLS 성능 최적화 적용
+- GitHub Pages 배포가 예전 `miso-one-contracts` 브랜치를 고정 체크아웃하던 문제 수정
+- GitHub Pages가 최신 `main`을 체크아웃하고 typecheck/build 후 배포하도록 변경
+- Vite 정적 배포 경로를 상대경로 기반으로 보완
+- `/startup-consulting` 직접 접속 시 창업·자금 상담창 자동 오픈
+- `/new-partner` 직접 접속 시 신규 거래 신청창 자동 오픈
+- 개인정보처리방침 `public/privacy.html` 추가
+- 홈페이지 이용안내 `public/terms.html` 추가
+- 푸터에서 개인정보처리방침·이용안내 연결
+- 메인 SEO 제목/설명/키워드 확장
+- Organization/LocalBusiness 구조화데이터 추가
 
 ## 다음 구현 우선순위
-1. GitHub Actions typecheck/build 결과 확인 및 오류 수정
+1. 최신 GitHub Actions typecheck/build 실제 실행 결과 확인 및 오류 수정
 2. 제품 이미지·제품별 상세 SEO 페이지 구조 확장
-3. 개인정보처리방침/이용약관 실제 페이지 추가
-4. 사이트맵·구조화데이터·검색엔진 최적화 강화
-5. 모바일 실기기 전체 QA
-6. 무료 호스팅 공개 URL 최종 확인
-7. 독립 도메인 연결
-8. 마지막 단계에서 아임웹 '주류창업/고객센터' 버튼을 독립 홈페이지 상담 경로로 연결
+3. 최종 공개 주소 확정 후 sitemap.xml 및 robots.txt Sitemap 경로 활성화
+4. 모바일 실기기 전체 QA
+5. 무료 호스팅 공개 URL 최종 확인
+6. 독립 도메인 연결
+7. 마지막 단계에서 아임웹 '주류창업/고객센터' 버튼을 독립 홈페이지 상담 경로로 연결
 
 ## 보안 메모
 - 이번 상담/신규거래 DB는 RLS와 비공개 사업자등록증 Storage를 적용했다.
