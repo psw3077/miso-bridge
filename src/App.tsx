@@ -2,17 +2,25 @@ import { FormEvent, useMemo, useState } from "react";
 import {
   ArrowRight, Beer, Building2, CheckCircle2, FileUp, Grape, Menu,
   MessageCircle, Phone, Search, ShieldCheck, Sparkles, Store, Wine, X,
+  BadgeHelp, Handshake, RefreshCw,
 } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 import { categories, products } from "./misoOneData";
 
-type FormKind = "partner" | "consulting" | null;
+type FormKind = "partner" | "consulting" | "closure" | "franchise" | null;
 type Notice = { type: "ok" | "error"; text: string } | null;
 
 const links = {
   kakao: "http://pf.kakao.com/_xnaXJn",
   blog: "https://blog.naver.com/saga9292",
   instagram: "https://www.instagram.com/misojooryu/",
+  facebook: "https://www.facebook.com/100069034002808",
+};
+
+const consultingLabels: Record<Exclude<FormKind, "partner" | null>, string> = {
+  consulting: "창업·자금",
+  closure: "폐업·업종변경",
+  franchise: "프랜차이즈·업체연결",
 };
 
 export default function App() {
@@ -64,6 +72,8 @@ export default function App() {
         const file = data.get("license") as File;
         if (file?.size) {
           if (file.size > 8 * 1024 * 1024) throw new Error("사업자등록증 파일은 8MB 이하만 가능합니다.");
+          const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+          if (!allowed.includes(file.type)) throw new Error("사업자등록증은 PDF, JPG, PNG, WEBP만 가능합니다.");
           const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
           const path = `${crypto.randomUUID()}/${safeName}`;
           const upload = await supabase.storage.from("business-licenses").upload(path, file);
@@ -79,8 +89,9 @@ export default function App() {
           address: data.get("region"),
           inquiry: [
             `담당자: ${data.get("contact_name") || "-"}`,
+            `기존 주류회사: ${data.get("current_supplier") || "-"}`,
+            `오픈 예정일: ${data.get("opening_date") || "-"}`,
             `예상 월 매입: ${data.get("monthly_purchase") || "-"}`,
-            `희망 납품일: ${data.get("delivery_date") || "-"}`,
             `희망 주류: ${data.get("wanted_products") || "-"}`,
             `문의: ${data.get("inquiry") || "-"}`,
           ].join("\n"),
@@ -90,6 +101,7 @@ export default function App() {
         setNotice({ type: "ok", text: "신규 거래 신청이 접수되었습니다. 담당자가 확인 후 빠르게 연락드리겠습니다." });
       } else {
         const result = await supabase.from("consulting_inquiries").insert({
+          consulting_type: consultingLabels[formKind],
           name: data.get("name"),
           phone: data.get("phone"),
           region: data.get("region"),
@@ -97,10 +109,14 @@ export default function App() {
           opening_timing: data.get("opening_timing"),
           budget: data.get("budget"),
           funding_needed: data.get("funding_needed"),
-          inquiry: data.get("inquiry"),
+          inquiry: [
+            data.get("partner_needs") ? `필요 연결: ${data.get("partner_needs")}` : "",
+            data.get("closure_timing") ? `폐업/변경 예정: ${data.get("closure_timing")}` : "",
+            String(data.get("inquiry") || ""),
+          ].filter(Boolean).join("\n"),
         });
         if (result.error) throw result.error;
-        setNotice({ type: "ok", text: "창업·자금 상담이 접수되었습니다. 담당자가 확인 후 연락드리겠습니다." });
+        setNotice({ type: "ok", text: `${consultingLabels[formKind]} 상담이 접수되었습니다. 담당자가 확인 후 연락드리겠습니다.` });
       }
       form.reset();
     } catch (error) {
@@ -115,24 +131,25 @@ export default function App() {
     document.getElementById("liquor-search")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const closeMobileMenu = () => setMenuOpen(false);
+
   return (
     <>
       <header className="header miso-header">
-        <a className="brand" href="#top" aria-label="미소주류 홈">
+        <a className="brand" href="#top" aria-label="미소주류 홈" onClick={closeMobileMenu}>
           <span className="brand-mark">M</span>
           <span><b>MISO ONE</b><small>(주)미소주류</small></span>
         </a>
         <nav className={menuOpen ? "nav open" : "nav"}>
-          <a href="#about">회사소개</a>
-          <a href="#business">사업영역</a>
-          <a href="#liquor-search">주류검색</a>
-          <a href="#categories">주류 컬렉션</a>
-          <a href="#consulting">창업·자금 컨설팅</a>
-          <a href="#partner">신규 거래 상담</a>
+          <a href="#about" onClick={closeMobileMenu}>회사소개</a>
+          <a href="#liquor-search" onClick={closeMobileMenu}>주류검색</a>
+          <a href="#categories" onClick={closeMobileMenu}>전세계주류</a>
+          <a href="#growth-services" onClick={closeMobileMenu}>창업·성장지원</a>
+          <a href="#partner" onClick={closeMobileMenu}>신규 거래</a>
           <a href={links.blog} target="_blank" rel="noreferrer">블로그</a>
         </nav>
         <a className="header-phone" href="tel:0313363077"><Phone size={17}/> 031-336-3077</a>
-        <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="메뉴">
+        <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="메뉴" aria-expanded={menuOpen}>
           {menuOpen ? <X /> : <Menu />}
         </button>
       </header>
@@ -140,18 +157,18 @@ export default function App() {
       <main id="top">
         <section className="miso-hero">
           <div className="hero-copy">
-            <div className="eyebrow"><ShieldCheck size={17}/> 2016년부터 외식업 현장과 함께</div>
+            <div className="eyebrow"><ShieldCheck size={17}/> 주류 공급부터 창업·성장까지 ONE STOP</div>
             <h1>술보다<br/><em>장사를 먼저 생각합니다.</em></h1>
-            <p>국내주류·수입주류·중국주류·생맥주 공급부터 창업·자금 컨설팅까지.<br/>미소주류는 술을 공급하는 데서 끝나지 않고 업소의 매출과 성장을 함께 고민합니다.</p>
+            <p>국내주류·수입주류·중국주류·생맥주 공급부터 신규거래, 창업자금, 폐업·업종변경, 프랜차이즈·전문업체 연결까지.<br/>미소주류는 업소의 매출과 성장을 함께 만드는 비즈니스 파트너입니다.</p>
             <div className="hero-actions">
               <button className="button primary" onClick={() => openForm("partner")}>신규 거래 신청 <ArrowRight size={18}/></button>
               <button className="button secondary" onClick={() => document.getElementById("liquor-search")?.scrollIntoView({ behavior: "smooth" })}><Search size={18}/> AI 주류검색</button>
-              <button className="button secondary" onClick={() => openForm("consulting")}><Sparkles size={18}/> 창업·자금 컨설팅</button>
+              <button className="button secondary" onClick={() => openForm("consulting")}><Sparkles size={18}/> 창업·자금 상담</button>
             </div>
           </div>
           <div className="hero-proof" aria-label="미소주류 핵심 강점">
-            <div><b>2016</b><span>설립</span></div>
             <div><b>3,600+</b><span>거래처 경험</span></div>
+            <div><b>WORLD</b><span>국내·세계 주류</span></div>
             <div><b>ONE STOP</b><span>주류·창업·상담</span></div>
             <div><b>DIRECT</b><span>대표 직접 상담</span></div>
           </div>
@@ -160,19 +177,19 @@ export default function App() {
         <section className="miso-proof-strip">
           <span><CheckCircle2/> 국내·수입·중국주류 전문</span>
           <span><CheckCircle2/> 생맥주 시스템 지원</span>
-          <span><CheckCircle2/> 창업·자금 상담</span>
-          <span><CheckCircle2/> 거래처 3,600+와 함께한 공급 경험</span>
+          <span><CheckCircle2/> 창업·자금·폐업 상담</span>
+          <span><CheckCircle2/> 프랜차이즈·전문업체 연결</span>
         </section>
 
         <section className="search-section" id="liquor-search">
           <div className="section-heading compact">
             <span className="section-kicker">MISO LIQUOR SEARCH</span>
-            <h2>찾으시는 주류를 바로 검색하세요.</h2>
-            <p>제품명을 입력하면 카테고리와 기본 정보를 확인하고 견적·거래 상담까지 바로 연결할 수 있습니다.</p>
+            <h2>주류 이름만 검색해도 미소주류로.</h2>
+            <p>제품명·주종·원산지로 검색하고 기본 정보 확인부터 업소용 공급·견적 상담까지 바로 연결하세요.</p>
           </div>
 
           <div className="search-panel">
-            <div className="search-input-wrap"><Search/><input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="찾으시는 주류 이름을 입력하세요"/><button onClick={() => setKeyword(keyword.trim())}>검색</button></div>
+            <div className="search-input-wrap"><Search/><input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="예: 연태고량주, 카스, 우량예, 사케"/><button onClick={() => setKeyword(keyword.trim())}>검색</button></div>
             <div className="popular-keywords">
               {['연태고량주','칭따오','카스','테라','참이슬','처음처럼','새로','골든블루','조니워커','우량예','하얼빈','사케','와인','생맥주'].map((item) => <button key={item} onClick={() => chooseKeyword(item)}>{item}</button>)}
             </div>
@@ -194,7 +211,7 @@ export default function App() {
                 </dl>
                 <div className="product-actions">
                   <button onClick={() => openForm("partner")}>공급·견적 문의</button>
-                  <a href={links.blog} target="_blank" rel="noreferrer">블로그에서 더 보기</a>
+                  <a href={`${links.blog}/PostSearchList.naver?SearchText=${encodeURIComponent(product.name)}`} target="_blank" rel="noreferrer">블로그에서 더 보기</a>
                 </div>
               </article>
             ))}
@@ -203,19 +220,19 @@ export default function App() {
           {results.length === 0 && (
             <div className="empty-search">
               <Search size={34}/>
-              <h3>관련 제품을 찾지 못했습니다.</h3>
-              <p>블로그 검색 또는 전화로 문의해 주세요.</p>
-              <div><a className="button secondary" href={links.blog} target="_blank" rel="noreferrer">블로그 보기</a><a className="button primary" href="tel:0313363077">전화 031-336-3077</a></div>
+              <h3>등록 준비 중인 제품입니다.</h3>
+              <p>미소주류 블로그 또는 전화 상담으로 재고·공급 여부를 확인해 주세요.</p>
+              <div><a className="button secondary" href={`${links.blog}/PostSearchList.naver?SearchText=${encodeURIComponent(keyword)}`} target="_blank" rel="noreferrer">블로그에서 검색</a><a className="button primary" href="tel:0313363077">전화 031-336-3077</a></div>
             </div>
           )}
         </section>
 
         <section className="section" id="categories">
-          <div className="section-heading"><span className="section-kicker">LIQUOR COLLECTION</span><h2>업종에 맞는 주류를 한 번에.</h2></div>
+          <div className="section-heading"><span className="section-kicker">WORLD LIQUOR COLLECTION</span><h2>국내주류부터 전세계주류까지.</h2><p>업종과 상권에 맞는 주류 구성을 한곳에서 찾아보세요.</p></div>
           <div className="miso-category-grid">
             <Category icon={<Store/>} title="국산주류" text="소주·맥주 등 외식업 기본 주류" onClick={() => { setCategory("국산주류"); setKeyword(""); }}/>
             <Category icon={<Beer/>} title="수입맥주" text="칭따오·하얼빈 등 다양한 수입맥주" onClick={() => { setCategory("수입맥주"); setKeyword(""); }}/>
-            <Category icon={<Building2/>} title="중국주류" text="연태·우량예 등 중국 백주 전문" onClick={() => { setCategory("중국주류"); setKeyword(""); }}/>
+            <Category icon={<Building2/>} title="중국주류" text="연태·우량예·서봉주 등 중국술 전문" onClick={() => { setCategory("중국주류"); setKeyword(""); }}/>
             <Category icon={<Wine/>} title="위스키" text="업종과 가격대에 맞는 위스키" onClick={() => { setCategory("위스키"); setKeyword(""); }}/>
             <Category icon={<Sparkles/>} title="사케" text="준마이·긴죠·다이긴죠 등" onClick={() => { setCategory("사케"); setKeyword(""); }}/>
             <Category icon={<Grape/>} title="와인" text="레드·화이트·스파클링" onClick={() => { setCategory("와인"); setKeyword(""); }}/>
@@ -235,12 +252,22 @@ export default function App() {
         </section>
 
         <section className="dual-cta" id="partner">
-          <div className="cta-card dark"><span>NEW PARTNER</span><h2>신규 거래 상담</h2><p>상호·지역·업종·희망 주류를 남겨주시면 확인 후 빠르게 연락드립니다.</p><button className="button gold-button" onClick={() => openForm("partner")}>신규 거래 신청 <ArrowRight/></button></div>
+          <div className="cta-card dark"><span>NEW PARTNER</span><h2>신규 거래 상담</h2><p>상호·지역·업종·희망 주류와 사업자등록증을 남겨주시면 확인 후 빠르게 연락드립니다.</p><button className="button gold-button" onClick={() => openForm("partner")}>신규 거래 신청 <ArrowRight/></button></div>
           <div className="cta-card" id="consulting"><span>STARTUP CONSULTING</span><h2>창업·자금 컨설팅</h2><p>창업 예정 시기, 예산, 업종과 자금상담 필요 여부를 바탕으로 상담합니다.</p><button className="button primary" onClick={() => openForm("consulting")}>무료 상담 신청 <ArrowRight/></button></div>
         </section>
 
+        <section className="section growth-services" id="growth-services">
+          <div className="section-heading"><span className="section-kicker">MISO BUSINESS CONNECT</span><h2>가게의 시작부터 변화와 재도전까지.</h2><p>미소주류가 직접 처리하지 않는 분야는 필요한 전문업체와 연결하고, 최종적으로 매장 운영과 주류 거래까지 이어지도록 돕습니다.</p></div>
+          <div className="growth-grid">
+            <article><span><Sparkles/></span><h3>창업·자금 상담</h3><p>신규창업, 업종선택, 예상예산, 정책자금·금융상담 방향을 함께 점검합니다.</p><button onClick={() => openForm("consulting")}>상담 신청</button></article>
+            <article><span><RefreshCw/></span><h3>폐업·업종변경</h3><p>폐업, 원상복구, 집기정리부터 새로운 업종으로 전환하는 상담까지 연결합니다.</p><button onClick={() => openForm("closure")}>폐업·변경 상담</button></article>
+            <article><span><Handshake/></span><h3>프랜차이즈·업체연결</h3><p>인테리어, 주방설비, 세무·노무, 마케팅, 메뉴·밀키트 등 필요한 파트너를 연결합니다.</p><button onClick={() => openForm("franchise")}>업체 연결 상담</button></article>
+            <article><span><BadgeHelp/></span><h3>주류회사 변경 상담</h3><p>기존 거래 조건과 필요한 주류 구성을 확인하고 신규 거래 가능 여부를 상담합니다.</p><button onClick={() => openForm("partner")}>거래 변경 상담</button></article>
+          </div>
+        </section>
+
         <section className="section about" id="about">
-          <div className="about-copy"><span className="section-kicker">ABOUT MISO</span><h2>좋은 공급이<br/>좋은 사업을 만듭니다.</h2><p>미소주류는 단순히 술을 공급하는 회사가 아니라 거래처의 성장을 함께 고민하는 파트너를 지향합니다. 국내·수입·중국주류와 생맥주 공급, 신규 거래, 창업·자금 상담을 하나로 연결합니다.</p></div>
+          <div className="about-copy"><span className="section-kicker">ABOUT MISO</span><h2>좋은 공급이<br/>좋은 사업을 만듭니다.</h2><p>미소주류는 단순히 술을 공급하는 회사가 아니라 거래처의 성장을 함께 고민하는 파트너를 지향합니다. 국내·수입·중국주류와 생맥주 공급, 신규 거래, 창업·자금 상담, 폐업·업종변경과 전문업체 연결을 하나로 이어갑니다.</p></div>
           <div className="quote-card"><div className="quote-mark">“</div><p>술 파는 회사를 넘어<br/>장사 잘되게 만드는 회사로.</p><span>(주)미소주류 · MISO ONE</span></div>
         </section>
 
@@ -264,7 +291,7 @@ export default function App() {
 
       <footer>
         <div className="brand footer-brand"><span className="brand-mark">M</span><span><b>MISO ONE</b><small>(주)미소주류</small></span></div>
-        <div>경기도 용인시 처인구 모현읍 곡현로718번길 27, B동<br/>전화 031-336-3077 · 이메일 6miso3077@gmail.com<br/><a href={links.blog} target="_blank" rel="noreferrer">네이버 블로그</a> · <a href={links.instagram} target="_blank" rel="noreferrer">인스타그램</a> · <a href="#privacy">개인정보처리방침</a></div>
+        <div>경기도 용인시 처인구 모현읍 곡현로718번길 27, B동<br/>전화 031-336-3077 · 이메일 6miso3077@gmail.com<br/><a href={links.blog} target="_blank" rel="noreferrer">네이버 블로그</a> · <a href={links.instagram} target="_blank" rel="noreferrer">인스타그램</a> · <a href={links.facebook} target="_blank" rel="noreferrer">페이스북</a> · <a href={links.kakao} target="_blank" rel="noreferrer">카카오채널</a></div>
         <div className="copyright">© MISO JOORYU. All rights reserved.</div>
       </footer>
 
@@ -272,7 +299,7 @@ export default function App() {
         <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && closeForm()}>
           <div className="modal">
             <button className="modal-close" onClick={closeForm}><X/></button>
-            <div className="modal-head"><span className="section-kicker">MISO ONE</span><h2>{formKind === "partner" ? "신규 거래 신청" : "창업·자금 컨설팅"}</h2><p>필수 정보를 남겨주시면 담당자가 확인 후 연락드립니다.</p></div>
+            <div className="modal-head"><span className="section-kicker">MISO ONE</span><h2>{formKind === "partner" ? "신규 거래 신청" : consultingLabels[formKind]}</h2><p>필수 정보를 남겨주시면 담당자가 확인 후 연락드립니다.</p></div>
             {!isSupabaseConfigured && <div className="config-alert">현재 온라인 DB 설정을 확인 중입니다. 전화 031-336-3077 상담은 바로 가능합니다.</div>}
             {notice && <div className={`notice ${notice.type}`}>{notice.text}{notice.type === "ok" && <div className="success-links"><a href={links.kakao} target="_blank" rel="noreferrer">카카오 상담 계속하기</a><a href="tel:0313363077">전화상담 031-336-3077</a></div>}</div>}
 
@@ -284,18 +311,20 @@ export default function App() {
                 <Field label="지역" name="region" required />
                 <Field label="업종" name="business_type" required />
                 <Field label="담당자명" name="contact_name" />
+                <Field label="기존 주류회사" name="current_supplier" />
+                <Field label="오픈 예정일" name="opening_date" type="date" />
                 <Field label="예상 월 매입금액" name="monthly_purchase" />
-                <Field label="희망 납품일" name="delivery_date" type="date" />
                 <Field label="취급 희망 주류" name="wanted_products" full />
-                <label className="field full"><span>사업자등록증</span><div className="file-input"><FileUp size={19}/><input name="license" type="file" accept="image/*,.pdf"/></div><small>PDF 또는 이미지, 최대 8MB</small></label>
+                <label className="field full"><span>사업자등록증</span><div className="file-input"><FileUp size={19}/><input name="license" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"/></div><small>PDF·JPG·PNG·WEBP, 최대 8MB / 비공개 저장</small></label>
                 <label className="field full"><span>문의내용</span><textarea name="inquiry" rows={4}/></label>
               </> : <>
                 <Field label="이름" name="name" required />
                 <Field label="전화번호" name="phone" type="tel" required />
                 <Field label="지역" name="region" required />
-                <Field label="희망 업종" name="business_type" required />
-                <Field label="창업 예정 시기" name="opening_timing" />
+                <Field label={formKind === "closure" ? "현재/변경 희망 업종" : "희망 업종"} name="business_type" required />
+                {formKind === "closure" ? <Field label="폐업·변경 예정 시기" name="closure_timing" /> : <Field label="창업 예정 시기" name="opening_timing" />}
                 <Field label="예상 예산" name="budget" />
+                {formKind === "franchise" && <Field label="필요한 업체·서비스" name="partner_needs" full />}
                 <label className="field"><span>자금상담 필요 여부</span><select name="funding_needed" defaultValue="상담 희망"><option>상담 희망</option><option>필요 없음</option><option>아직 모름</option></select></label>
                 <label className="field full"><span>문의내용</span><textarea name="inquiry" rows={5}/></label>
               </>}
