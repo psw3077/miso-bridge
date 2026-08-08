@@ -68,12 +68,18 @@
 - 빌드 전 제품 SEO 페이지 + `sitemap.xml` + `robots.txt` 자동 생성
 - 주류회사/주류업체/주류회사변경/주류제품검색/창업/창업자금/프랜차이즈 관련 핵심 키워드군을 메인 SEO에 반영
 - 블로그·SNS용 해시태그와 검색 의도별 키워드 운영 문서 `SEO_KEYWORDS.md` 추가
+- 검색 의도별 정적 랜딩페이지 자동 생성기 `scripts/generate-landing-pages.mjs` 추가
+- `주류도매회사·주류업체`, `주류회사 변경`, `창업자금`, `창업컨설팅`, `주류제품검색` 5개 전용 랜딩페이지 생성 구조 적용
+- 랜딩페이지별 고유 title/description/keywords/canonical/Open Graph/Service 구조화데이터 적용
+- 랜딩페이지 CTA를 신규거래·창업상담·주류검색으로 연결
+- 랜딩페이지 URL을 제품 sitemap과 병합하는 `scripts/merge-landing-sitemap.mjs` 추가
+- 빌드 전 랜딩페이지 → 제품페이지 → sitemap 병합 순서로 자동 실행하도록 `package.json` 보완
 
 ## 다음 구현 우선순위
 1. 최신 GitHub Actions typecheck/build 실제 실행 결과 확인 및 오류 수정
 2. 주요 주류 실제 제품 이미지 파일을 `public/product-images/`에 등록
 3. 메인 제품 카드에서 제품별 상세 SEO 페이지 진입 버튼 강화
-4. 검색 의도별 랜딩페이지(주류도매회사/주류회사변경/창업자금/창업컨설팅) 확장
+4. 메인 홈페이지에서 5개 SEO 랜딩페이지 내부 링크 강화
 5. 모바일 실기기 전체 QA
 6. 무료 호스팅 공개 URL 최종 확인
 7. 독립 도메인 연결 후 `SITE_URL`을 최종 도메인으로 변경
