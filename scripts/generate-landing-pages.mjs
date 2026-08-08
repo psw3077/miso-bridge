@@ -34,31 +34,19 @@ const pages = [
     ctaUrl: `${siteUrl}/new-partner`,
   },
   {
-    slug: 'startup-funding',
-    title: '창업자금·창업자금 상담 | 미소주류',
-    h1: '창업자금 상담, 자금만이 아니라 실제 개업 구조까지 함께 봅니다.',
-    description: '외식업·식당·주점 창업자금 상담, 예상 예산과 업종, 오픈 시기, 주류 공급까지 연결하는 미소주류 창업 상담.',
-    keywords: ['창업자금','창업자금상담','외식업창업자금','식당창업자금','주점창업자금','창업대출상담','창업비용'],
-    body: [
-      ['예산 점검', '보증금·인테리어·주방설비·초도물품·주류·운전자금 등 실제 개업에 필요한 항목을 나눠 확인합니다.'],
-      ['자금상담 방향', '자금 지원을 보장하는 서비스가 아니라 현재 조건에 맞는 상담 방향과 필요한 전문기관 연결을 돕습니다.'],
-      ['주류 공급 연계', '창업 업종과 상권에 맞는 주류 구성과 신규 거래 상담까지 한 번에 연결합니다.'],
-    ],
-    cta: '창업·자금 상담 신청',
-    ctaUrl: `${siteUrl}/startup-consulting`,
-  },
-  {
     slug: 'startup-consulting-guide',
-    title: '외식업 창업컨설팅·식당창업 상담 | 미소주류',
-    h1: '창업컨설팅, 오픈 전부터 주류와 운영을 같이 준비하세요.',
-    description: '외식업창업, 식당창업, 주점창업, 업종변경, 프랜차이즈·전문업체 연결과 주류 공급을 함께 상담하는 미소주류.',
-    keywords: ['창업컨설팅','외식업창업','식당창업','주점창업','음식점창업','업종변경','프랜차이즈상담','창업업체연결'],
+    title: '창업컨설팅·창업자금 상담 | 미소주류',
+    h1: '창업컨설팅과 창업자금, 실제 개업 구조 안에서 함께 준비하세요.',
+    description: '외식업·식당·주점 창업컨설팅과 창업자금 상담, 예상 예산·업종·오픈 시기·전문업체 연결·주류 공급을 한 번에 점검하는 미소주류.',
+    keywords: ['창업컨설팅','창업자금','창업자금상담','외식업창업','외식업창업자금','식당창업','식당창업자금','주점창업','주점창업자금','창업비용','창업대출상담','업종변경','프랜차이즈상담','창업업체연결'],
     body: [
       ['창업 준비', '업종, 지역, 오픈 예정 시기, 예상 예산과 필요한 주류 구성을 먼저 정리합니다.'],
+      ['예산·창업자금 점검', '보증금·인테리어·주방설비·초도물품·주류·운전자금 등 실제 개업비용을 나누고 자금상담 방향을 확인합니다.'],
+      ['자금상담 안내', '자금 지원을 보장하는 서비스가 아니라 현재 조건에 맞는 상담 방향과 필요한 전문기관 연결을 돕습니다.'],
       ['전문업체 연결', '필요 시 인테리어, 주방설비, 세무·노무, 마케팅, 메뉴 관련 전문업체 연결 상담을 제공합니다.'],
-      ['오픈 후 거래', '상담이 실제 매장 오픈과 주류 신규 거래로 자연스럽게 이어지도록 한 흐름으로 관리합니다.'],
+      ['오픈·주류 공급 연계', '상담이 실제 매장 오픈과 업종·상권에 맞는 주류 신규 거래로 이어지도록 한 흐름으로 관리합니다.'],
     ],
-    cta: '무료 창업상담',
+    cta: '창업·자금 통합상담',
     ctaUrl: `${siteUrl}/startup-consulting`,
   },
   {
@@ -103,6 +91,14 @@ for (const page of pages) {
 <main class="wrap"><span class="kicker">MISO BUSINESS GUIDE</span><h1>${esc(page.h1)}</h1><p class="lead">${esc(page.description)}</p><div class="grid">${sections}</div><div class="cta"><a class="primary" href="${page.ctaUrl}">${esc(page.cta)}</a><a class="secondary" href="tel:0313363077">전화 031-336-3077</a></div><div class="chips">${page.keywords.map(k=>`<span>#${esc(k)}</span>`).join('')}</div></main></body></html>`;
   fs.writeFileSync(path.join(dir, 'index.html'), html);
 }
+
+const legacyFundingDir = path.join(publicDir, 'startup-funding');
+fs.mkdirSync(legacyFundingDir, { recursive: true });
+const integratedStartupUrl = `${siteUrl}/startup-consulting-guide/`;
+fs.writeFileSync(path.join(legacyFundingDir, 'index.html'), `<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>창업컨설팅·창업자금 상담 | 미소주류</title><meta name="robots" content="noindex,follow"/><link rel="canonical" href="${integratedStartupUrl}"/>
+<meta http-equiv="refresh" content="0;url=${integratedStartupUrl}"/></head><body><p>창업컨설팅·창업자금 통합 안내 페이지로 이동합니다. <a href="${integratedStartupUrl}">바로 이동</a></p></body></html>`);
 
 const extraSitemap = path.join(publicDir, 'landing-sitemap-urls.txt');
 fs.writeFileSync(extraSitemap, pages.map((p) => `${siteUrl}/${p.slug}/`).join('\n') + '\n');
