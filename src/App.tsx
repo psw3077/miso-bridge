@@ -220,8 +220,7 @@ export default function App() {
           <div className="seo-guide-grid">
             <a href={`${import.meta.env.BASE_URL}liquor-wholesale-company/`}><Building2/><span><b>주류도매회사·주류업체</b><small>공급 지역과 거래 절차 안내</small></span><ArrowRight/></a>
             <a href={`${import.meta.env.BASE_URL}change-liquor-company/`}><Handshake/><span><b>주류회사 변경</b><small>거래 조건 비교와 변경 상담</small></span><ArrowRight/></a>
-            <a href={`${import.meta.env.BASE_URL}startup-funding/`}><Sparkles/><span><b>창업자금 상담</b><small>예산과 개업 구조 점검</small></span><ArrowRight/></a>
-            <a href={`${import.meta.env.BASE_URL}startup-consulting-guide/`}><Store/><span><b>창업컨설팅</b><small>업종·일정·주류 공급 연결</small></span><ArrowRight/></a>
+            <a href={`${import.meta.env.BASE_URL}startup-consulting-guide/`}><Sparkles/><span><b>창업컨설팅·창업자금</b><small>예산·업종·일정·주류 공급 통합상담</small></span><ArrowRight/></a>
             <a href={`${import.meta.env.BASE_URL}liquor-product-search/`}><Search/><span><b>주류제품검색</b><small>제품 정보와 공급 문의 안내</small></span><ArrowRight/></a>
           </div>
         </nav>
