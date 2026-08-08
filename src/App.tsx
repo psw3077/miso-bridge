@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   ArrowRight, Beer, Building2, CheckCircle2, FileUp, Grape, Menu,
   MessageCircle, Phone, Search, ShieldCheck, Sparkles, Store, Wine, X,
@@ -29,6 +29,18 @@ export default function App() {
   const [submitting, setSubmitting] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [category, setCategory] = useState("전체");
+
+  useEffect(() => {
+    const path = window.location.pathname.replace(/\/+$/, "");
+    const params = new URLSearchParams(window.location.search);
+    if (path.endsWith("/startup-consulting") || params.get("consulting") === "1") {
+      setFormKind("consulting");
+      document.body.style.overflow = "hidden";
+    } else if (path.endsWith("/new-partner") || params.get("partner") === "1") {
+      setFormKind("partner");
+      document.body.style.overflow = "hidden";
+    }
+  }, []);
 
   const results = useMemo(() => {
     const q = keyword.trim().toLowerCase();
@@ -288,7 +300,7 @@ export default function App() {
 
       <footer>
         <div className="brand footer-brand"><span className="brand-mark">M</span><span><b>MISO ONE</b><small>(주)미소주류</small></span></div>
-        <div>경기도 용인시 처인구 모현읍 곡현로718번길 27, B동<br/>전화 031-336-3077 · 이메일 6miso3077@gmail.com<br/><a href={links.blog} target="_blank" rel="noreferrer">네이버 블로그</a> · <a href={links.instagram} target="_blank" rel="noreferrer">인스타그램</a> · <a href={links.facebook} target="_blank" rel="noreferrer">페이스북</a> · <a href={links.kakao} target="_blank" rel="noreferrer">카카오채널</a></div>
+        <div>경기도 용인시 처인구 모현읍 곡현로718번길 27, B동<br/>전화 031-336-3077 · 이메일 6miso3077@gmail.com<br/><a href={links.blog} target="_blank" rel="noreferrer">네이버 블로그</a> · <a href={links.instagram} target="_blank" rel="noreferrer">인스타그램</a> · <a href={links.facebook} target="_blank" rel="noreferrer">페이스북</a> · <a href={links.kakao} target="_blank" rel="noreferrer">카카오채널</a><br/><a href="./privacy.html">개인정보처리방침</a> · <a href="./terms.html">홈페이지 이용안내</a></div>
         <div className="copyright">© MISO JOORYU. All rights reserved.</div>
       </footer>
 
