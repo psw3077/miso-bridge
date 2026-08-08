@@ -7,6 +7,7 @@ import {
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 import { categories, products } from "./misoOneData";
 import "./product-cards.css";
+import "./seo-guides.css";
 
 type FormKind = "partner" | "consulting" | "franchise" | null;
 type Notice = { type: "ok" | "error"; text: string } | null;
@@ -209,6 +210,21 @@ export default function App() {
           <span><CheckCircle2/> 창업·자금·업종변경 상담</span>
           <span><CheckCircle2/> 프랜차이즈·전문업체 연결</span>
         </section>
+
+        <nav className="seo-guides" aria-labelledby="seo-guides-title">
+          <div className="seo-guides-heading">
+            <span className="section-kicker">MISO BUSINESS GUIDE</span>
+            <h2 id="seo-guides-title">필요한 상담 정보를 먼저 확인하세요.</h2>
+            <p>주류 공급부터 거래처 변경과 창업 준비까지, 목적에 맞는 안내 페이지로 바로 이동할 수 있습니다.</p>
+          </div>
+          <div className="seo-guide-grid">
+            <a href={`${import.meta.env.BASE_URL}liquor-wholesale-company/`}><Building2/><span><b>주류도매회사·주류업체</b><small>공급 지역과 거래 절차 안내</small></span><ArrowRight/></a>
+            <a href={`${import.meta.env.BASE_URL}change-liquor-company/`}><Handshake/><span><b>주류회사 변경</b><small>거래 조건 비교와 변경 상담</small></span><ArrowRight/></a>
+            <a href={`${import.meta.env.BASE_URL}startup-funding/`}><Sparkles/><span><b>창업자금 상담</b><small>예산과 개업 구조 점검</small></span><ArrowRight/></a>
+            <a href={`${import.meta.env.BASE_URL}startup-consulting-guide/`}><Store/><span><b>창업컨설팅</b><small>업종·일정·주류 공급 연결</small></span><ArrowRight/></a>
+            <a href={`${import.meta.env.BASE_URL}liquor-product-search/`}><Search/><span><b>주류제품검색</b><small>제품 정보와 공급 문의 안내</small></span><ArrowRight/></a>
+          </div>
+        </nav>
 
         <section className="search-section" id="liquor-search">
           <div className="section-heading compact">
