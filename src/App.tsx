@@ -6,9 +6,28 @@ import {
 } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "./lib/supabase";
 import { categories, products } from "./misoOneData";
+import "./product-cards.css";
 
 type FormKind = "partner" | "consulting" | "franchise" | null;
 type Notice = { type: "ok" | "error"; text: string } | null;
+
+function ProductMedia({ id, name }: { id: string; name: string }) {
+  const [imageAvailable, setImageAvailable] = useState(true);
+  const detailUrl = `${import.meta.env.BASE_URL}products/${id}/`;
+
+  return (
+    <a className="product-media" href={detailUrl} aria-label={`${name} 상세 정보 보기`}>
+      {imageAvailable ? (
+        <img src={`${import.meta.env.BASE_URL}product-images/${id}.webp`} alt={`${name} 제품 이미지`} loading="lazy" onError={() => setImageAvailable(false)} />
+      ) : (
+        <span className="product-placeholder" aria-label={`${name} 제품 이미지 준비 중`}>
+          <Wine aria-hidden="true" /><b>{name}</b><small>제품 이미지 준비 중</small>
+        </span>
+      )}
+      <span className="product-detail-hint">상세 정보 보기 <ArrowRight aria-hidden="true" /></span>
+    </a>
+  );
+}
 
 const links = {
   kakao: "http://pf.kakao.com/_xnaXJn",
@@ -211,8 +230,9 @@ export default function App() {
           <div className="product-grid">
             {results.map((product) => (
               <article className="product-card" key={product.id}>
+                <ProductMedia id={product.id} name={product.name} />
                 <span className="product-category">{product.category}</span>
-                <h3>{product.name}</h3>
+                <h3><a href={`${import.meta.env.BASE_URL}products/${product.id}/`}>{product.name}</a></h3>
                 <p>{product.description}</p>
                 <dl>
                   <div><dt>원산지</dt><dd>{product.origin}</dd></div>
@@ -220,8 +240,9 @@ export default function App() {
                   {product.volume && <div><dt>용량</dt><dd>{product.volume}</dd></div>}
                 </dl>
                 <div className="product-actions">
+                  <a className="product-detail-link" href={`${import.meta.env.BASE_URL}products/${product.id}/`}>제품 상세 보기 <ArrowRight aria-hidden="true" /></a>
                   <button onClick={() => openForm("partner")}>공급·견적 문의</button>
-                  <a href={`${links.blog}/PostSearchList.naver?SearchText=${encodeURIComponent(product.name)}`} target="_blank" rel="noreferrer">블로그에서 더 보기</a>
+                  <a className="product-blog-link" href={`${links.blog}/PostSearchList.naver?SearchText=${encodeURIComponent(product.name)}`} target="_blank" rel="noreferrer">블로그에서 더 보기</a>
                 </div>
               </article>
             ))}
