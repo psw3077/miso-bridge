@@ -32,6 +32,7 @@ function ProductMedia({ id, name }: { id: string; name: string }) {
 }
 
 const links = {
+  official: "https://misoliquor.co.kr/",
   kakao: "http://pf.kakao.com/_xnaXJn",
   blog: "https://blog.naver.com/saga9292",
   instagram: "https://www.instagram.com/misojooryu/",
@@ -177,6 +178,7 @@ export default function App() {
           <a href="#categories" onClick={closeMobileMenu}>전세계주류</a>
           <a href="#growth-services" onClick={closeMobileMenu}>창업·성장지원</a>
           <a href="#partner" onClick={closeMobileMenu}>신규 거래</a>
+          <a href={links.official}>공식 홈페이지</a>
           <a href={links.blog} target="_blank" rel="noreferrer">블로그</a>
         </nav>
         <a className="header-phone" href="tel:0313363077"><Phone size={17}/> 031-336-3077</a>
@@ -337,7 +339,7 @@ export default function App() {
 
       <footer>
         <div className="brand footer-brand"><span className="brand-mark">M</span><span><b>MISO ONE</b><small>(주)미소주류</small></span></div>
-        <div>경기도 용인시 처인구 모현읍 곡현로718번길 27, B동<br/>전화 031-336-3077 · 이메일 6miso3077@gmail.com<br/><a href={links.blog} target="_blank" rel="noreferrer">네이버 블로그</a> · <a href={links.instagram} target="_blank" rel="noreferrer">인스타그램</a> · <a href={links.facebook} target="_blank" rel="noreferrer">페이스북</a> · <a href={links.kakao} target="_blank" rel="noreferrer">카카오채널</a><br/><a href="./privacy.html">개인정보처리방침</a> · <a href="./terms.html">홈페이지 이용안내</a></div>
+        <div>경기도 용인시 처인구 모현읍 곡현로718번길 27, B동<br/>전화 031-336-3077 · 이메일 6miso3077@gmail.com<br/><a href={links.official}>미소주류 공식 홈페이지</a> · <a href={links.blog} target="_blank" rel="noreferrer">네이버 블로그</a> · <a href={links.instagram} target="_blank" rel="noreferrer">인스타그램</a> · <a href={links.facebook} target="_blank" rel="noreferrer">페이스북</a> · <a href={links.kakao} target="_blank" rel="noreferrer">카카오채널</a><br/><a href="./privacy.html">개인정보처리방침</a> · <a href="./terms.html">홈페이지 이용안내</a></div>
         <div className="copyright">© MISO JOORYU. All rights reserved.</div>
       </footer>
 
