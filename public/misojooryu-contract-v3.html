@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>미소주류 전자약정서 V3</title>
+<style>
+:root{--n:#0b2547;--n2:#15416f;--bg:#f3f6fa;--line:#d9e2ec;--t:#15263b;--m:#6b7b8e;--g:#15803d;--r:#b91c1c;--a:#a16207}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font-family:Arial,"Noto Sans KR",sans-serif}button,input,textarea{font:inherit}
+header{background:linear-gradient(135deg,var(--n),var(--n2));color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 5px 18px #0b25472a}
+.h{max-width:1180px;margin:auto;padding:17px;display:flex;justify-content:space-between;gap:12px;align-items:center}.brand b{font-size:22px}.brand small{display:block;opacity:.75;margin-top:3px}.pill{padding:7px 11px;border-radius:999px;border:1px solid #ffffff45;background:#ffffff16;font-size:12px;font-weight:900}
+main{max-width:1180px;margin:20px auto;padding:0 14px 70px}.layout{display:grid;grid-template-columns:350px 1fr;gap:15px}.card{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 8px 23px #0b25470b;overflow:hidden}.card+.card{margin-top:14px}.ch{padding:15px 17px;border-bottom:1px solid var(--line);font-weight:900}.cb{padding:17px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}label{display:block;font-size:12px;font-weight:900;color:#52647b;margin-bottom:5px}input,textarea{width:100%;padding:10px;border:1px solid #cbd6e3;border-radius:8px}
+.notice{font-size:12px;line-height:1.55;padding:10px;border-radius:9px;background:#fff7ed;color:#8c4b14;margin-top:10px}.info{font-size:12px;line-height:1.55;padding:10px;border-radius:9px;background:#eff6ff;color:#1c4f90;margin-top:10px;word-break:break-all}
+.btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:8px;padding:10px 13px;font-weight:900;cursor:pointer}.pri{background:var(--n);color:#fff}.sec{background:#e8eef5;color:#17324f}.green{background:#dcfce7;color:#166534}.red{background:#fee2e2;color:#991b1b}.amber{background:#fef3c7;color:#92400e}
+.paper{padding:28px;max-width:900px;margin:auto}.title{text-align:center;font-family:"Noto Serif KR",serif;font-size:27px;font-weight:900;letter-spacing:4px;text-decoration:underline;margin:6px 0 22px}.intro,.terms{font-family:"Noto Serif KR",serif;font-size:14px;line-height:1.78}.terms p{margin:9px 0}
+table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #64748b;padding:6px}th{background:#f8fafc;font-size:12px}.eq input{border:0;border-radius:0;padding:6px}.signs{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:15px}.sig{border:1px solid var(--line);border-radius:10px;padding:10px}.sighead{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}.sighead b{font-size:13px}
+canvas{width:100%;height:150px;border:2px dashed #94a7ba;border-radius:9px;background:#fff;touch-action:none}.sigstatus{font-size:11px;color:var(--g);margin-top:5px}.checks{padding:12px;border:1px solid #ced9e6;border-radius:10px;background:#f8fbff;margin-top:15px;font-size:12px;line-height:1.65}.checks input{width:auto}.audit{font-size:11px;color:var(--m);line-height:1.65;margin-top:15px;border-top:1px solid var(--line);padding-top:10px}
+.result{margin-top:12px;padding:11px;border-radius:9px;background:#eef5ff;color:#174b87;font-size:12px;word-break:break-all}.ok{background:#ecfdf3;color:#166534}.warn{background:#fff7ed;color:#92400e}.hidden{display:none!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.fields,.signs{grid-template-columns:1fr}.full{grid-column:auto}.paper{padding:17px}.title{font-size:20px;letter-spacing:2px}}
+@media print{header,.left,.no-print{display:none!important}body{background:#fff}main{margin:0;padding:0;max-width:none}.layout{display:block}.card{border:0;box-shadow:none}.paper{padding:10mm;max-width:none}.intro,.terms{font-size:11px;line-height:1.5}.signs{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><div class="h"><div class="brand"><b>미소주류 전자약정서</b><small>거래계약 및 장비대여 약정서 · 서버연동 V3</small></div><div class="pill" id="pill">작성중</div></div></header>
+<main>
+<div class="layout">
+<aside class="left" id="adminPanel">
+  <div class="card"><div class="ch">계약 기본정보</div><div class="cb">
+    <div class="fields">
+      <div><label>계약번호</label><input id="no" readonly></div><div><label>계약일</label><input id="date" type="date"></div>
+      <div class="full"><label>거래처명</label><input id="shop"></div><div><label>대표자</label><input id="owner"></div><div><label>사업자번호</label><input id="biz"></div>
+      <div><label>전화번호</label><input id="phone"></div><div class="full"><label>사업장 주소</label><input id="addr"></div><div class="full"><label>자택 주소</label><input id="home"></div>
+      <div class="full"><label>담당 영업사원</label><input id="manager"></div>
+    </div>
+    <div class="notice">주민등록번호는 수집하지 않습니다. 서버에는 계약정보, 장비내역, 전자서명, 상태, 서명시각 및 감사기록이 저장됩니다.</div>
+    <div class="btns"><button class="btn pri" onclick="createAgreement()">서버저장 + 서명링크 만들기</button><button class="btn sec" onclick="window.print()">PDF / 인쇄</button></div>
+    <div id="adminResult" class="result hidden"></div>
+  </div></div>
+
+  <div class="card"><div class="ch">서명 진행상태</div><div class="cb">
+    <div class="info">거래처가 휴대폰에서 서명하면 이 화면에서 자동으로 상태를 확인합니다.</div>
+    <div id="remoteStatus" class="result">아직 생성된 약정이 없습니다.</div>
+    <div class="btns"><button class="btn amber" onclick="refreshAdmin()">상태 새로고침</button><button class="btn green" onclick="completeAgreement()">최종완료</button></div>
+  </div></div>
+</aside>
+
+<section class="card">
+<div class="paper">
+<div class="title">거래계약 및 장비대여 약정서</div>
+<div class="intro"><b>미소주류</b> (이하 “갑”이라 칭함)와 <b id="party">________________</b> (이하 “을”이라 칭함)는 아래와 같이 기자재 사용에 대한 약정계약을 체결하고 신의에 따라 성실히 계약상의 의무를 이행할 것을 확약하며, 이 계약의 증거로서 계약서를 작성하며 당사자 간 기명날인한 후 “갑”이 보관한다.</div>
+<div class="terms">
+<p><b>제1조.</b> “갑”은 “을”에게 상호 성실한 거래를 위하여 아래의 기자재 및 물품을 대여(지원)하고, 을은 갑이 공급한 주류의 확인 및 주류판매계산서 교부즉시, 주류구매전용카드로 결제한다.</p>
+<table class="eq"><thead><tr><th>품명</th><th>규격</th><th>수량</th><th>금액</th></tr></thead><tbody id="rows"></tbody><tfoot><tr><th colspan="3">계</th><th id="total">0원</th></tr></tfoot></table>
+<div class="btns no-print" id="rowBtns"><button class="btn sec" onclick="addRow()">장비행 추가</button><button class="btn red" onclick="delRow()">마지막 행 삭제</button></div>
+<p><b>제2조.</b> “을”은 “갑”이 제공하는 주류 이외 다른 방법(할인매장, 타도매장)으로 주류를 구입하지 않는다. 또한 지원된 기자재는 “갑”의 재산이므로 임의로 양도 또는 대여할 수 없다.</p>
+<p><b>제3조.</b> 본 계약의 유효 거래기간은 본 계약일로부터 3년으로 정하며 약정만료 1개월 전 쌍방이 계약 종료 의사가 없을 경우 2년씩 자동연장하며, “을”이 계약기간 안에 거래를 중단할 경우 채무금과 지원된 지원물품대 및 장비대금(현시점, 신품가격) 즉시 “갑”에게 변제하여야 하고 이를 이행하지 않을 경우 년 25% 연체를 부담하여야 한다.</p>
+<p><b>제4조.</b> “갑”이 장비를 무상대여하는 이유는 장비 1대당 월평균 40만원 정도(공급가기준)의 주류를 구매하는 것을 전제로 한 것이므로 만일 “을”의 월평균 주류 구입액이 1대당 40만원에 미치지 못할 경우 “갑”은 “을”에게 장비를 현금가액으로 구입 또는 회수를 요구할 수 있다.</p>
+<p><b>제5조.</b> “갑”이 “을”에게 무상으로 대여한 쇼케이스 등 모든 장비의 관리는 점유자인 “을”에게 있으며, 야간의 직원부재시는 코드를 분리하여야 하는 등 안전에 유의하여야 하며 장비로 인한 화재가 발생하였을 경우 장비 관리자인 “을”이 모든 화재책임을 부담한다. “갑”은 장비지원 후 1년까지 무상 A/S를 지원하며 이후 발생하는 수리비는 “을”이 부담한다.</p>
+<p>1) “갑”은 “을”이 상기 1~4조까지의 계약조항 위반 시 지체없이 계약을 해지할 수 있으며, 해지 통보즉시 “을”은 모든 상품대 미수금과 채무를 변제해야 하며 상기 지원된 물품은 지원당시의 현금가액으로 변제 또는 동일한 신품으로 변상하여야 한다.</p>
+<p>2) “을”은 정당한 사유없이 일방적으로 계약을 파기하고 타 도매장과 거래할 경우에 최초 “갑”이 지원한 비품 및 물품가액의 50%를 위약금으로 지급해야 한다.</p>
+<p><b>제6조.</b> 본 냉장고는 주방용이 아니므로 주방에서의 사용을 금하고 전원 등 냉장고 이상으로 식자재의 변질에 대하여 갑이 책임지지 않는다.</p>
+<p><b>제7조.</b> 본 약정서는 계약일로부터 효력을 발생한다.</p>
+<p>※ 약정되지 않은 사항에 대해서도 일반 상 관례에 따른다.</p>
+<p>※ 당사와의 거래약정 및 개인(신용)정보 수집 · 이용 · 제공 조회에 동의하며 대여품목을 확인합니다.</p>
+<p>※ “을”은 위 내용을 충분히 인지하였음. (인)</p>
+</div>
+
+<div class="checks" id="checks">
+<label><input type="checkbox" id="c1"> 위 약정 내용과 장비 대여내역을 모두 확인했습니다.</label><br>
+<label><input type="checkbox" id="c2"> 전자문서 및 전자서명 방식으로 약정을 체결하는 데 동의합니다.</label><br>
+<label><input type="checkbox" id="c3"> 개인정보 수집·이용 고지사항을 확인했습니다.</label>
+</div>
+
+<div class="signs">
+<div class="sig" id="sigABox"><div class="sighead"><b>“갑” 미소주류 서명</b><button class="btn sec no-print" onclick="clearSig('a')">지우기</button></div><canvas id="a" width="900" height="300"></canvas><div class="sigstatus" id="as"></div></div>
+<div class="sig"><div class="sighead"><b>“을” 거래처 대표 서명</b><button class="btn sec no-print" onclick="clearSig('b')">지우기</button></div><canvas id="b" width="900" height="300"></canvas><div class="sigstatus" id="bs"></div></div>
+</div>
+<div class="audit"><b>전자약정 상태</b><div id="statusText">작성중</div></div>
+<div id="signResult" class="result hidden"></div>
+<div class="btns no-print hidden" id="signerBtns"><button class="btn green" onclick="submitCustomerSignature()">동의하고 전자서명 완료</button><button class="btn sec" onclick="window.print()">PDF / 인쇄</button></div>
+</div>
+</section>
+</div>
+</main>
+
+<script>
+const SB_URL="https://lqohxtvcpdwmtonsifga.supabase.co";
+const SB_KEY="sb_publishable_Wxo0Tl7HSRjKss1RAnhbsg_v5xWN_kR";
+const headers={"content-type":"application/json","apikey":SB_KEY,"authorization":"Bearer "+SB_KEY};
+const $=id=>document.getElementById(id);
+let adminToken="", signerToken="", sigA="", sigB="", currentAdmin=null;
+const DOC_TEXT=`거래계약 및 장비대여 약정서\n\n제1조. “갑”은 “을”에게 상호 성실한 거래를 위하여 아래의 기자재 및 물품을 대여(지원)하고, 을은 갑이 공급한 주류의 확인 및 주류판매계산서 교부즉시, 주류구매전용카드로 결제한다.\n\n제2조. “을”은 “갑”이 제공하는 주류 이외 다른 방법(할인매장, 타도매장)으로 주류를 구입하지 않는다. 또한 지원된 기자재는 “갑”의 재산이므로 임의로 양도 또는 대여할 수 없다.\n\n제3조. 본 계약의 유효 거래기간은 본 계약일로부터 3년으로 정하며 약정만료 1개월 전 쌍방이 계약 종료 의사가 없을 경우 2년씩 자동연장하며, “을”이 계약기간 안에 거래를 중단할 경우 채무금과 지원된 지원물품대 및 장비대금(현시점, 신품가격) 즉시 “갑”에게 변제하여야 하고 이를 이행하지 않을 경우 년 25% 연체를 부담하여야 한다.\n\n제4조. “갑”이 장비를 무상대여하는 이유는 장비 1대당 월평균 40만원 정도(공급가기준)의 주류를 구매하는 것을 전제로 한 것이므로 만일 “을”의 월평균 주류 구입액이 1대당 40만원에 미치지 못할 경우 “갑”은 “을”에게 장비를 현금가액으로 구입 또는 회수를 요구할 수 있다.\n\n제5조. “갑”이 “을”에게 무상으로 대여한 쇼케이스 등 모든 장비의 관리는 점유자인 “을”에게 있으며, 야간의 직원부재시는 코드를 분리하여야 하는 등 안전에 유의하여야 하며 장비로 인한 화재가 발생하였을 경우 장비 관리자인 “을”이 모든 화재책임을 부담한다. “갑”은 장비지원 후 1년까지 무상 A/S를 지원하며 이후 발생하는 수리비는 “을”이 부담한다.\n1) “갑”은 “을”이 상기 1~4조까지의 계약조항 위반 시 지체없이 계약을 해지할 수 있으며, 해지 통보즉시 “을”은 모든 상품대 미수금과 채무를 변제해야 하며 상기 지원된 물품은 지원당시의 현금가액으로 변제 또는 동일한 신품으로 변상하여야 한다.\n2) “을”은 정당한 사유없이 일방적으로 계약을 파기하고 타 도매장과 거래할 경우에 최초 “갑”이 지원한 비품 및 물품가액의 50%를 위약금으로 지급해야 한다.\n\n제6조. 본 냉장고는 주방용이 아니므로 주방에서의 사용을 금하고 전원 등 냉장고 이상으로 식자재의 변질에 대하여 갑이 책임지지 않는다.\n제7조. 본 약정서는 계약일로부터 효력을 발생한다.\n※ 약정되지 않은 사항에 대해서도 일반 상 관례에 따른다.\n※ 당사와의 거래약정 및 개인(신용)정보 수집 · 이용 · 제공 조회에 동의하며 대여품목을 확인합니다.\n※ “을”은 위 내용을 충분히 인지하였음. (인)`;
+async function rpc(fn,body){const r=await fetch(`${SB_URL}/rest/v1/rpc/${fn}`,{method:"POST",headers,body:JSON.stringify(body)});const txt=await r.text();let j;try{j=JSON.parse(txt)}catch{j=txt}if(!r.ok)throw new Error(j?.message||j?.error||txt||"서버 오류");return j;}
+function makeNo(){const d=new Date();return "MISO-"+d.toISOString().slice(0,10).replaceAll("-","")+"-"+Math.floor(1000+Math.random()*9000)}
+function addRow(data={}){const r=$("rows").insertRow();r.innerHTML=`<td><input placeholder="쇼케이스" value="${data.name||""}"></td><td><input placeholder="규격" value="${data.spec||""}"></td><td><input type="number" min="0" value="${data.qty||""}"></td><td><input class="amt" type="number" min="0" value="${data.amount||""}"></td>`;r.querySelectorAll("input").forEach(x=>x.oninput=sum);sum();}
+function delRow(){if($("rows").rows.length)$("rows").deleteRow(-1);sum()}
+function sum(){let n=0;document.querySelectorAll(".amt").forEach(x=>n+=Number(x.value||0));$("total").textContent=n.toLocaleString("ko-KR")+"원"}
+function equipment(){return [...$("rows").rows].map(r=>{const x=r.querySelectorAll("input");return{name:x[0].value,spec:x[1].value,qty:x[2].value,amount:x[3].value}})}
+function setupSig(id,status,key){const c=$(id),x=c.getContext("2d");let d=false;x.lineWidth=5;x.lineCap="round";x.lineJoin="round";x.strokeStyle="#0b2547";const p=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height]};c.onpointerdown=e=>{e.preventDefault();d=true;c.setPointerCapture?.(e.pointerId);const q=p(e);x.beginPath();x.moveTo(...q)};c.onpointermove=e=>{if(!d)return;e.preventDefault();const q=p(e);x.lineTo(...q);x.stroke()};c.onpointerup=c.onpointercancel=()=>{if(!d)return;d=false;const data=c.toDataURL("image/png");if(key==="A")sigA=data;else sigB=data;$(status).textContent="서명 입력됨 · "+new Date().toLocaleString("ko-KR")};}
+function clearSig(id){const c=$(id);c.getContext("2d").clearRect(0,0,c.width,c.height);if(id==="a"){sigA="";$("as").textContent=""}else{sigB="";$("bs").textContent=""}}
+async function sha256(text){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(text));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+function baseUrl(){return location.href.split("?")[0].split("#")[0]}
+async function createAgreement(){if(!$("shop").value||!$("owner").value||!$("phone").value)return alert("거래처명, 대표자, 전화번호를 입력해 주세요.");try{const data=await rpc("miso_trade_create",{p_contract_no:$("no").value,p_contract_date:$("date").value,p_customer_name:$("shop").value,p_owner_name:$("owner").value,p_business_no:$("biz").value,p_phone:$("phone").value,p_business_address:$("addr").value,p_home_address:$("home").value,p_sales_manager:$("manager").value,p_equipment:equipment(),p_document_text:DOC_TEXT,p_supplier_signature:sigA||null});const row=Array.isArray(data)?data[0]:data;adminToken=row.admin_token;signerToken=row.signer_token;localStorage.setItem("miso_trade_admin_token",adminToken);const signUrl=`${baseUrl()}?sign=${signerToken}`;$("adminResult").classList.remove("hidden");$("adminResult").innerHTML=`서버 저장 완료<br><b>거래처 서명 링크</b><br>${signUrl}<br><button class="btn sec" style="margin-top:8px" onclick="navigator.clipboard.writeText('${signUrl}')">링크 복사</button>`;$("pill").textContent="서명요청";$("statusText").textContent="서명요청 완료";refreshAdmin();startPolling();}catch(e){alert(e.message)}}
+async function refreshAdmin(){if(!adminToken)adminToken=localStorage.getItem("miso_trade_admin_token")||"";if(!adminToken)return;try{const d=await rpc("miso_trade_get_admin",{p_token:adminToken});const a=Array.isArray(d)?d[0]:d;if(!a)return;currentAdmin=a;$("remoteStatus").className="result "+(a.status==="customer_signed"||a.status==="completed"?"ok":"");$("remoteStatus").textContent=`상태: ${a.status} · 거래처 서명: ${a.customer_signed_at?new Date(a.customer_signed_at).toLocaleString("ko-KR"):"대기중"}`;$("pill").textContent=a.status==="customer_signed"?"거래처서명완료":a.status==="completed"?"최종완료":"서명요청";}catch(e){$("remoteStatus").textContent=e.message}}
+function startPolling(){setInterval(refreshAdmin,5000)}
+async function completeAgreement(){if(!adminToken)return alert("먼저 약정서를 서버에 저장해 주세요.");await refreshAdmin();if(!currentAdmin||currentAdmin.status!=="customer_signed")return alert("거래처 서명완료 후 최종완료할 수 있습니다.");try{const hash=await sha256(JSON.stringify(currentAdmin));await rpc("miso_trade_complete",{p_admin_token:adminToken,p_document_hash:hash,p_supplier_signature:sigA||null});$("pill").textContent="최종완료";$("remoteStatus").className="result ok";$("remoteStatus").textContent="최종완료 · 문서해시 "+hash;alert("전자약정이 최종완료되었습니다.");}catch(e){alert(e.message)}}
+async function loadSigner(token){$("adminPanel").classList.add("hidden");$("sigABox").classList.add("hidden");$("rowBtns").classList.add("hidden");$("signerBtns").classList.remove("hidden");$("pill").textContent="거래처 서명";try{const d=await rpc("miso_trade_get_signer",{p_token:token});const a=Array.isArray(d)?d[0]:d;if(!a)throw new Error("유효하지 않은 서명 링크입니다.");$("party").textContent=a.customer_name;$("statusText").textContent=`계약번호 ${a.contract_no} · ${a.contract_date}`;$("rows").innerHTML="";(a.equipment||[]).forEach(addRow);document.querySelectorAll("#rows input").forEach(x=>x.disabled=true);$("checks").querySelectorAll("input").forEach(x=>x.checked=false);if(a.status==="customer_signed"||a.status==="completed"){$("signerBtns").classList.add("hidden");$("b").style.display="none";$("bs").textContent="이미 서명 완료 · "+(a.customer_signed_at?new Date(a.customer_signed_at).toLocaleString("ko-KR"):"");$("pill").textContent="서명완료"}}catch(e){$("signResult").classList.remove("hidden");$("signResult").classList.add("warn");$("signResult").textContent=e.message}}
+async function submitCustomerSignature(){if(![$("c1").checked,$("c2").checked,$("c3").checked].every(Boolean))return alert("확인 항목 3개에 모두 체크해 주세요.");if(!sigB)return alert("전자서명을 입력해 주세요.");const token=new URLSearchParams(location.search).get("sign");try{await rpc("miso_trade_sign_customer",{p_token:token,p_signature:sigB});$("signResult").classList.remove("hidden");$("signResult").classList.add("ok");$("signResult").textContent="전자서명이 정상 완료되었습니다. 창을 닫으셔도 됩니다.";$("signerBtns").classList.add("hidden");$("pill").textContent="서명완료";}catch(e){alert(e.message)}}
+function init(){$("no").value=makeNo();$("date").value=new Date().toISOString().slice(0,10);$("shop").oninput=()=>$("party").textContent=$("shop").value||"________________";for(let i=0;i<3;i++)addRow();setupSig("a","as","A");setupSig("b","bs","B");const sign=new URLSearchParams(location.search).get("sign");if(sign)loadSigner(sign);else{adminToken=localStorage.getItem("miso_trade_admin_token")||"";if(adminToken){refreshAdmin();startPolling()}}}
+init();
+</script>
+</body>
+</html>
