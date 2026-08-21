@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "./lib/supabase";
 import { getCardFunnel, type CardEvent } from "./cardFunnel";
 import { getStaffPerformance } from "./cardStaffPerformance";
+import { getSalesInsights } from "./cardSalesInsights";
 import CardMonthlyPerformance from "./CardMonthlyPerformance";
 import CardLongTermPerformance from "./CardLongTermPerformance";
 
@@ -9,6 +10,7 @@ type Period = 7 | 30 | 0;
 type LeadRow = { status?: string | null; source_card?: string | null; source_staff?: string | null; created_at?: string | null };
 
 const PERIOD_LABEL: Record<Period, string> = { 7: "최근 7일", 30: "최근 30일", 0: "전체" };
+const LEVEL_LABEL={good:"잘하고 있는 점",watch:"확인할 점",action:"우선 개선"} as const;
 
 export default function CardFunnelPanel() {
   const [period, setPeriod] = useState<Period>(30);
@@ -37,6 +39,8 @@ export default function CardFunnelPanel() {
   const staffPerformance = useMemo(() => getStaffPerformance(events, leads), [events, leads]);
   const applications = leads.length;
   const appRate = stats.views ? Math.round(applications / stats.views * 100) : 0;
+  const topStaff=staffPerformance.find(x=>x.approved>0)??null;
+  const insights=useMemo(()=>getSalesInsights({views:stats.views,contacts:stats.contacts,contactRate:stats.contactRate,leadClicks:stats.leadClicks,applications,approved:stats.approvedLeads,approvalRate:stats.approvalRate,saves:stats.saves,shares:stats.shares,topStaff}),[stats,applications,topStaff]);
   const steps = [
     ["명함 조회", stats.views, "100%"],
     ["전화·카톡·문자", stats.contacts, `${stats.contactRate}%`],
@@ -61,6 +65,7 @@ export default function CardFunnelPanel() {
         </div>
         <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>단계</th><th>건수</th><th>조회 대비</th></tr></thead><tbody>{steps.map(([label,count,rate]) => <tr key={label}><td><strong>{label}</strong></td><td>{count}건</td><td>{rate}</td></tr>)}</tbody></table></div>
         <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:12}}><small>연락처 저장 {stats.saves}건</small><small>공유·링크복사·QR {stats.shares}건</small><small>기간: {PERIOD_LABEL[period]}</small></div>
+        {insights.length>0&&<section style={{marginTop:24}}><h3>대표님께 드리는 자동 영업 제안</h3><div style={{display:"grid",gap:10}}>{insights.map((x,i)=><article key={`${x.title}-${i}`} style={{border:"1px solid #dfe7ed",borderRadius:14,padding:16,background:x.level==="action"?"#fff8eb":x.level==="good"?"#f2fbf5":"#f7f9fb"}}><small style={{fontWeight:800}}>{LEVEL_LABEL[x.level]}</small><strong style={{display:"block",marginTop:5}}>{x.title}</strong><p style={{margin:"7px 0",fontSize:13}}>{x.message}</p><b style={{fontSize:13}}>추천 실행: {x.action}</b></article>)}</div></section>}
         {staffPerformance.length>0&&<><h3 style={{marginTop:24}}>직원·대표별 영업성과</h3><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>순위</th><th>담당자</th><th>조회</th><th>상담</th><th>상담률</th><th>신규거래 클릭</th><th>신청</th><th>신청률</th><th>승인</th><th>승인율</th></tr></thead><tbody>{staffPerformance.map((x,i)=><tr key={x.name}><td>{i+1}</td><td><strong>{x.name}</strong></td><td>{x.views}</td><td>{x.contacts}</td><td>{x.contactRate}%</td><td>{x.leadClicks}</td><td>{x.applications}</td><td>{x.applicationRate}%</td><td>{x.approved}</td><td>{x.approvalRate}%</td></tr>)}</tbody></table></div></>}
         {stats.views===0 && <p className="admin-empty">아직 실제 사용 데이터가 없습니다. 배포 후 명함이 열리고 버튼이 눌리면 자동 집계됩니다.</p>}
       </>}
