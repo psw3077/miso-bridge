@@ -21,6 +21,10 @@
     <title>미소주류 공식 홈페이지 | 주류도매회사·주류업체·주류회사변경</title>
     <script>
       (function () {
+        if (window.location.hostname === "card.misoliquor.co.kr" && !window.location.pathname.startsWith("/card-pro")) {
+          window.location.replace("/card-pro/");
+          return;
+        }
         var ref = document.referrer || "";
         if (ref.indexOf("miso73590.imweb.me") !== -1) {
           window.location.replace("http://pf.kakao.com/_xnaXJn");
@@ -38,7 +42,7 @@
         "alternateName": ["미소주류", "MISO ONE", "MISO JOORYU"],
         "description": "서울·경기 수도권을 중심으로 국내주류·수입주류·중국주류·생맥주 공급, 주류제품검색, 신규 거래, 주류회사 변경, 창업컨설팅·창업자금 상담을 제공하는 주류도매회사",
         "telephone": "+82-31-336-3077",
-        "email": "6miso3077@gmail.com",
+        "email": "miso3077@naver.com",
         "areaServed": ["서울", "경기도", "수도권"],
         "address": {
           "@type": "PostalAddress",
