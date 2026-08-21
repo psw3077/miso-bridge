@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "./lib/supabase";
 import { getCardFunnel, type CardEvent } from "./cardFunnel";
 import { getStaffPerformance } from "./cardStaffPerformance";
+import CardMonthlyPerformance from "./CardMonthlyPerformance";
 
 type Period = 7 | 30 | 0;
 type LeadRow = { status?: string | null; source_card?: string | null; source_staff?: string | null; created_at?: string | null };
@@ -43,26 +44,26 @@ export default function CardFunnelPanel() {
     ["거래 승인", stats.approvedLeads, `${stats.approvalRate}%`],
   ] as const;
 
-  return <section className="admin-panel">
-    <div className="admin-panel-title">
-      <div><span>MISO CARD FUNNEL</span><h2>전자명함 영업 퍼널</h2><small>명함을 본 사람이 실제 거래로 이어지는 과정을 확인합니다.</small></div>
-      <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{([7,30,0] as Period[]).map(p => <button key={p} className={period===p?"active":""} onClick={()=>setPeriod(p)}>{PERIOD_LABEL[p]}</button>)}</div>
-    </div>
-    {error && <div className="admin-notice error">{error}</div>}
-    {loading ? <p className="admin-empty">MISO CARD 통계를 불러오는 중입니다.</p> : <>
-      <div className="admin-stats">
-        <article><div><b>{stats.views}</b><span>명함 조회</span></div></article>
-        <article><div><b>{stats.contacts}</b><span>상담 클릭 · {stats.contactRate}%</span></div></article>
-        <article><div><b>{applications}</b><span>신규거래 신청 · {appRate}%</span></div></article>
-        <article><div><b>{stats.approvedLeads}</b><span>거래 승인 · {stats.approvalRate}%</span></div></article>
+  return <>
+    <section className="admin-panel">
+      <div className="admin-panel-title">
+        <div><span>MISO CARD FUNNEL</span><h2>전자명함 영업 퍼널</h2><small>명함을 본 사람이 실제 거래로 이어지는 과정을 확인합니다.</small></div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{([7,30,0] as Period[]).map(p => <button key={p} className={period===p?"active":""} onClick={()=>setPeriod(p)}>{PERIOD_LABEL[p]}</button>)}</div>
       </div>
-      <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>단계</th><th>건수</th><th>조회 대비</th></tr></thead><tbody>{steps.map(([label,count,rate]) => <tr key={label}><td><strong>{label}</strong></td><td>{count}건</td><td>{rate}</td></tr>)}</tbody></table></div>
-      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:12}}><small>연락처 저장 {stats.saves}건</small><small>공유·링크복사·QR {stats.shares}건</small><small>기간: {PERIOD_LABEL[period]}</small></div>
-
-      <div className="admin-panel-title" style={{marginTop:24}}><div><span>MISO CARD PERFORMANCE</span><h2>직원별 영업성과</h2><small>조회수가 아니라 실제 신청·승인 성과까지 비교합니다.</small></div></div>
-      {staffPerformance.length === 0 ? <p className="admin-empty">직원별 비교 데이터가 아직 없습니다.</p> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>순위</th><th>담당자/명함</th><th>조회</th><th>상담</th><th>상담률</th><th>신규거래 클릭</th><th>신청</th><th>신청률</th><th>승인</th><th>승인율</th></tr></thead><tbody>{staffPerformance.map((x,i)=><tr key={x.name}><td>{i+1}</td><td><strong>{x.name}</strong></td><td>{x.views}</td><td>{x.contacts}</td><td>{x.contactRate}%</td><td>{x.leadClicks}</td><td>{x.applications}</td><td>{x.applicationRate}%</td><td><strong>{x.approved}</strong></td><td>{x.approvalRate}%</td></tr>)}</tbody></table></div>}
-
-      {stats.views===0 && <p className="admin-empty">아직 실제 사용 데이터가 없습니다. 배포 후 명함이 열리고 버튼이 눌리면 자동 집계됩니다.</p>}
-    </>}
-  </section>;
+      {error && <div className="admin-notice error">{error}</div>}
+      {loading ? <p className="admin-empty">MISO CARD 통계를 불러오는 중입니다.</p> : <>
+        <div className="admin-stats">
+          <article><div><b>{stats.views}</b><span>명함 조회</span></div></article>
+          <article><div><b>{stats.contacts}</b><span>상담 클릭 · {stats.contactRate}%</span></div></article>
+          <article><div><b>{applications}</b><span>신규거래 신청 · {appRate}%</span></div></article>
+          <article><div><b>{stats.approvedLeads}</b><span>거래 승인 · {stats.approvalRate}%</span></div></article>
+        </div>
+        <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>단계</th><th>건수</th><th>조회 대비</th></tr></thead><tbody>{steps.map(([label,count,rate]) => <tr key={label}><td><strong>{label}</strong></td><td>{count}건</td><td>{rate}</td></tr>)}</tbody></table></div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:12}}><small>연락처 저장 {stats.saves}건</small><small>공유·링크복사·QR {stats.shares}건</small><small>기간: {PERIOD_LABEL[period]}</small></div>
+        {staffPerformance.length>0&&<><h3 style={{marginTop:24}}>직원·대표별 영업성과</h3><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>순위</th><th>담당자</th><th>조회</th><th>상담</th><th>상담률</th><th>신규거래 클릭</th><th>신청</th><th>신청률</th><th>승인</th><th>승인율</th></tr></thead><tbody>{staffPerformance.map((x,i)=><tr key={x.name}><td>{i+1}</td><td><strong>{x.name}</strong></td><td>{x.views}</td><td>{x.contacts}</td><td>{x.contactRate}%</td><td>{x.leadClicks}</td><td>{x.applications}</td><td>{x.applicationRate}%</td><td>{x.approved}</td><td>{x.approvalRate}%</td></tr>)}</tbody></table></div></>}
+        {stats.views===0 && <p className="admin-empty">아직 실제 사용 데이터가 없습니다. 배포 후 명함이 열리고 버튼이 눌리면 자동 집계됩니다.</p>}
+      </>}
+    </section>
+    <CardMonthlyPerformance />
+  </>;
 }
