@@ -1,1 +1,2 @@
 Trigger GitHub Pages deployment after enabling Pages source as GitHub Actions.
+Latest MISO CARD deploy trigger: 2026-08-21 20:35 KST
