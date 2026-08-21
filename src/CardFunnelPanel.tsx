@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "./lib/supabase";
 import { getCardFunnel, type CardEvent } from "./cardFunnel";
+import { getStaffPerformance } from "./cardStaffPerformance";
 
 type Period = 7 | 30 | 0;
 type LeadRow = { status?: string | null; source_card?: string | null; source_staff?: string | null; created_at?: string | null };
@@ -31,6 +32,7 @@ export default function CardFunnelPanel() {
   }
 
   const stats = useMemo(() => getCardFunnel(events, leads.filter(x => x.status === "approved").length), [events, leads]);
+  const staffPerformance = useMemo(() => getStaffPerformance(events, leads), [events, leads]);
   const applications = leads.length;
   const appRate = stats.views ? Math.round(applications / stats.views * 100) : 0;
   const steps = [
@@ -56,6 +58,10 @@ export default function CardFunnelPanel() {
       </div>
       <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>단계</th><th>건수</th><th>조회 대비</th></tr></thead><tbody>{steps.map(([label,count,rate]) => <tr key={label}><td><strong>{label}</strong></td><td>{count}건</td><td>{rate}</td></tr>)}</tbody></table></div>
       <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:12}}><small>연락처 저장 {stats.saves}건</small><small>공유·링크복사·QR {stats.shares}건</small><small>기간: {PERIOD_LABEL[period]}</small></div>
+
+      <div className="admin-panel-title" style={{marginTop:24}}><div><span>MISO CARD PERFORMANCE</span><h2>직원별 영업성과</h2><small>조회수가 아니라 실제 신청·승인 성과까지 비교합니다.</small></div></div>
+      {staffPerformance.length === 0 ? <p className="admin-empty">직원별 비교 데이터가 아직 없습니다.</p> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>순위</th><th>담당자/명함</th><th>조회</th><th>상담</th><th>상담률</th><th>신규거래 클릭</th><th>신청</th><th>신청률</th><th>승인</th><th>승인율</th></tr></thead><tbody>{staffPerformance.map((x,i)=><tr key={x.name}><td>{i+1}</td><td><strong>{x.name}</strong></td><td>{x.views}</td><td>{x.contacts}</td><td>{x.contactRate}%</td><td>{x.leadClicks}</td><td>{x.applications}</td><td>{x.applicationRate}%</td><td><strong>{x.approved}</strong></td><td>{x.approvalRate}%</td></tr>)}</tbody></table></div>}
+
       {stats.views===0 && <p className="admin-empty">아직 실제 사용 데이터가 없습니다. 배포 후 명함이 열리고 버튼이 눌리면 자동 집계됩니다.</p>}
     </>}
   </section>;
