@@ -3,6 +3,7 @@ import { supabase } from "./lib/supabase";
 import { getCardFunnel, type CardEvent } from "./cardFunnel";
 import { getStaffPerformance } from "./cardStaffPerformance";
 import CardMonthlyPerformance from "./CardMonthlyPerformance";
+import CardLongTermPerformance from "./CardLongTermPerformance";
 
 type Period = 7 | 30 | 0;
 type LeadRow = { status?: string | null; source_card?: string | null; source_staff?: string | null; created_at?: string | null };
@@ -65,5 +66,6 @@ export default function CardFunnelPanel() {
       </>}
     </section>
     <CardMonthlyPerformance />
+    <CardLongTermPerformance />
   </>;
 }
