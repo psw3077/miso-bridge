@@ -176,7 +176,7 @@
   <script>
     const publicCard='https://consult.misoliquor.co.kr/card-pro/?share=official-logo';
     function shareData(){return{title:'박상욱 대표 | 주식회사 미소주류',text:'주식회사 미소주류 박상욱 대표입니다.\n술만 공급하지 않습니다. 사장님의 장사를 함께 봅니다.',url:publicCard}}
-    async function shareCard(){const d=shareData();if(navigator.share){try{await navigator.share(d)}catch(e){}}else{await copyText(d.text+'\n'+d.url,'명함 주소를 복사했습니다.')}}
+    async function shareCard(){const d=shareData();if(navigator.share){try{await navigator.share(d);return}catch(e){if(e&&e.name==='AbortError')return}}const body=encodeURIComponent(d.text+'\n'+d.url);window.location.href='sms:?body='+body}
     async function copyCard(){const d=shareData();await copyText(d.text+'\n'+d.url,'명함 주소를 복사했습니다.')}
     async function copyText(t,msg){try{await navigator.clipboard.writeText(t);alert(msg)}catch(e){prompt('아래 내용을 복사하세요.',t)}}
     function saveVCard(){const v=['BEGIN:VCARD','VERSION:3.0','N:박;상욱;;;','FN:박상욱','ORG:주식회사 미소주류','TITLE:대표이사','TEL;TYPE=CELL,VOICE:010-7710-3077','TEL;TYPE=WORK,VOICE:031-336-3077','TEL;TYPE=WORK,FAX:031-624-4015','EMAIL;TYPE=WORK:miso3077@naver.com','ADR;TYPE=WORK:;;곡현로718번길 27, B동;용인시 처인구 모현읍;경기도;;;','URL:'+publicCard,'NOTE:술만 공급하지 않습니다. 사장님의 장사를 함께 봅니다.','END:VCARD'].join('\r\n');const b=new Blob(['\ufeff'+v],{type:'text/vcard;charset=utf-8'}),a=document.createElement('a'),u=URL.createObjectURL(b);a.href=u;a.download='미소주류_박상욱_대표.vcf';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
