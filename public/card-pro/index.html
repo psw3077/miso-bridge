@@ -51,13 +51,14 @@
     .headline{margin:35px 0 0;padding-top:27px;border-top:1px solid rgba(255,255,255,.14);font-size:29px;line-height:1.43;font-weight:790;letter-spacing:-1.3px}
     .headline em{color:var(--gold-soft);font-style:normal}
     .hero-note{margin:12px 0 0;max-width:460px;font-size:12px;line-height:1.7;color:rgba(255,255,255,.57)}
-    .quick-actions{position:relative;margin:-1px 0 0;padding:20px 25px 24px;display:grid;grid-template-columns:1.08fr 1fr 1fr;gap:9px;background:#fff}
+    .quick-actions{position:relative;margin:-1px 0 0;padding:20px 25px 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px;background:#fff}
     .action{min-height:62px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:0 15px;font-size:12px;font-weight:780;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
     .action small{display:block;margin-top:5px;font-size:9px;font-weight:600;color:var(--muted)}
     .action.call{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 10px 22px rgba(7,26,56,.15)}
     .action.call small{color:rgba(255,255,255,.56)}
     .action.kakao{background:var(--kakao);border-color:var(--kakao);color:#171717}
     .action.kakao small{color:rgba(0,0,0,.52)}
+    .action.startup{background:#f4ead5;border-color:#e7d1a5;color:var(--navy)}
     .action:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(7,26,56,.1)}
     .trust{margin:0 25px 30px;padding:17px 10px;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:15px;background:#f8fafc}
     .trust div{position:relative;text-align:center;padding:0 8px}
@@ -102,7 +103,7 @@
     .dock a,.dock button{border:0;background:transparent;color:#354154;text-decoration:none;font:inherit;font-size:9px;font-weight:760;display:grid;place-items:center;gap:4px;cursor:pointer}
     .dock i{display:grid;place-items:center;width:29px;height:29px;border-radius:10px;background:#f0f3f6;color:var(--navy);font-style:normal;font-size:14px}
     .dock .primary i{background:var(--navy);color:var(--gold-soft)}
-    @media(max-width:430px){.masthead{padding-left:20px;padding-right:20px}.identity{grid-template-columns:136px 1fr;gap:19px}.portrait{width:136px;height:174px}.name{font-size:36px}.headline{font-size:25px}.quick-actions{padding-left:20px;padding-right:20px;grid-template-columns:1fr 1fr}.action:first-child{grid-row:span 2;min-height:133px}.trust{margin-left:20px;margin-right:20px}.brand-visual{min-height:390px}.brand-visual img{object-position:64% center}.brand-visual:after{background:linear-gradient(90deg,rgba(4,17,37,.96) 0%,rgba(4,17,37,.81) 48%,rgba(4,17,37,.2) 100%)}.brand-story{padding-left:20px;padding-right:20px;max-width:330px}.brand-story strong{font-size:23px}.section{padding-left:20px;padding-right:20px}.channels{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:430px){.masthead{padding-left:20px;padding-right:20px}.identity{grid-template-columns:136px 1fr;gap:19px}.portrait{width:136px;height:174px}.name{font-size:36px}.headline{font-size:25px}.quick-actions{padding-left:20px;padding-right:20px;grid-template-columns:1fr 1fr}.trust{margin-left:20px;margin-right:20px}.brand-visual{min-height:390px}.brand-visual img{object-position:64% center}.brand-visual:after{background:linear-gradient(90deg,rgba(4,17,37,.96) 0%,rgba(4,17,37,.81) 48%,rgba(4,17,37,.2) 100%)}.brand-story{padding-left:20px;padding-right:20px;max-width:330px}.brand-story strong{font-size:23px}.section{padding-left:20px;padding-right:20px}.channels{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:350px){.identity{grid-template-columns:118px 1fr}.portrait{width:118px;height:154px}.name{font-size:32px}.headline{font-size:23px}.action{padding-left:12px}.trust{padding-left:3px;padding-right:3px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.action,.channel{transition:none}}
   </style>
@@ -129,13 +130,14 @@
       <a class="action call" href="tel:01077103077">대표 직통<small>010-7710-3077</small></a>
       <a class="action kakao" href="http://pf.kakao.com/_xnaXJn">카카오톡<small>바로 상담하기</small></a>
       <button class="action" type="button" onclick="saveVCard()">연락처 저장<small>휴대폰에 저장</small></button>
+      <a class="action startup" href="https://changupin.co.kr/">창업 문의<small>창업인 바로가기</small></a>
     </section>
 
-    <div class="trust" aria-label="미소주류 상담 특징"><div><b>대표 직접 상담</b><span>빠르고 정확하게</span></div><div><b>업소 맞춤 제안</b><span>상황과 예산 중심</span></div><div><b>안정적인 공급</b><span>현장 대응 기반</span></div></div>
+    <div class="trust" aria-label="미소주류 상담 특징"><div><b>상담 문의</b><span>빠르고 정확하게</span></div><div><b>업소 맞춤 제안</b><span>상황과 예산 중심</span></div><div><b>안정적인 공급</b><span>현장 대응 기반</span></div></div>
 
     <section class="brand-visual" aria-label="미소주류 매장 파트너십 이미지">
       <img src="./assets/miso-liquor-partnership-v2.jpg?v=20260822" alt="영업 준비 중인 매장을 표현한 미소주류 파트너십 이미지">
-      <div class="brand-story"><span>MISO LIQUOR PARTNERSHIP</span><strong>사장님의 장사를 이해하는<br>주류 파트너.</strong><p>매장에 맞는 주류와 안정적인 공급을 함께 설계합니다.</p><a class="brand-cta" href="tel:01077103077">대표에게 바로 상담</a></div>
+      <div class="brand-story"><span>MISO LIQUOR PARTNERSHIP</span><strong>사장님의 장사를 이해하는<br>주류 파트너.</strong><p>매장에 맞는 주류와 안정적인 공급을 함께 설계합니다.</p><a class="brand-cta" href="tel:01077103077">상담 문의하기</a></div>
     </section>
 
     <section class="section">
