@@ -122,7 +122,7 @@
       else if (href.includes("kakao.com")) eventType = "kakao";
       else if (href.startsWith("sms:")) eventType = "sms";
       else if (href.includes("new-partner")) eventType = "new_partner";
-      else if (href.includes("startup")) eventType = "startup";
+      else if (href.includes("changupin.co.kr") || href.includes("startup")) eventType = "startup";
       else if (text.includes("연락처 저장") || text === "저장") eventType = "save_contact";
       else if (text.includes("명함 보내기")) eventType = "share";
       else if (text.includes("링크 복사")) eventType = "copy_link";
