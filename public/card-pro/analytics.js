@@ -54,7 +54,7 @@
     const selected = getShareVariant();
     const url = new URL(location.href);
     url.searchParams.set("sv", selected);
-    url.searchParams.set("share", "logo");
+    url.searchParams.set("share", "official-logo");
     const text = selected === "A"
       ? "주식회사 미소주류 박상욱 대표 전자명함입니다. 주류 납품·신규거래·창업상담이 필요하시면 아래에서 바로 연락주세요."
       : "매장에 맞는 주류 공급과 견적이 필요하신가요? 미소주류 박상욱 대표 전자명함에서 전화·카카오톡·신규거래 상담을 바로 이용하실 수 있습니다.";
