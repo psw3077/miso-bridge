@@ -20,6 +20,8 @@ jobs:
     env:
       VITE_BASE_PATH: /miso-bridge/
       SITE_URL: https://psw3077.github.io/miso-bridge
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
