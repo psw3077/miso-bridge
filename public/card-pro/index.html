@@ -12,9 +12,9 @@
   <meta property="og:site_name" content="주식회사 미소주류">
   <meta property="og:title" content="박상욱 대표 | 주식회사 미소주류">
   <meta property="og:description" content="술만 공급하지 않습니다. 사장님의 장사를 함께 봅니다.">
-  <meta property="og:url" content="https://consult.misoliquor.co.kr/card-pro/">
-  <meta property="og:image" content="https://consult.misoliquor.co.kr/card-pro/assets/miso-card-premium-og-v2.jpg?v=20260822-official">
-  <meta property="og:image:secure_url" content="https://consult.misoliquor.co.kr/card-pro/assets/miso-card-premium-og-v2.jpg?v=20260822-official">
+  <meta property="og:url" content="https://consult.misoliquor.co.kr/card-pro/?share=official-logo-v2">
+  <meta property="og:image" content="https://consult.misoliquor.co.kr/card-pro/assets/miso-card-premium-og-v2.jpg?v=20260822-sharefix">
+  <meta property="og:image:secure_url" content="https://consult.misoliquor.co.kr/card-pro/assets/miso-card-premium-og-v2.jpg?v=20260822-sharefix">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -22,7 +22,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="박상욱 대표 | 주식회사 미소주류">
   <meta name="twitter:description" content="술만 공급하지 않습니다. 사장님의 장사를 함께 봅니다.">
-  <meta name="twitter:image" content="https://consult.misoliquor.co.kr/card-pro/assets/miso-card-premium-og-v2.jpg?v=20260822-official">
+  <meta name="twitter:image" content="https://consult.misoliquor.co.kr/card-pro/assets/miso-card-premium-og-v2.jpg?v=20260822-sharefix">
   <style>
     :root{--navy:#071a38;--navy-2:#0c2851;--navy-3:#102f5e;--gold:#d9b56d;--gold-soft:#f2e7cf;--ink:#172033;--muted:#697386;--line:#e8ecf2;--paper:#fff;--canvas:#edf1f5;--kakao:#fee500;--shadow:0 28px 70px rgba(7,26,56,.14)}
     *{box-sizing:border-box}
@@ -174,7 +174,7 @@
   <nav class="dock" aria-label="고정 빠른 메뉴"><a class="primary" href="tel:01077103077"><i aria-hidden="true">☎</i>대표 직통</a><a href="http://pf.kakao.com/_xnaXJn"><i aria-hidden="true">K</i>카카오톡</a><a href="https://consult.misoliquor.co.kr/new-partner?source_card=park-sangwook&amp;source_staff=%EB%B0%95%EC%83%81%EC%9A%B1"><i aria-hidden="true">＋</i>신규거래</a><button type="button" onclick="shareCard()"><i aria-hidden="true">↗</i>명함 보내기</button></nav>
   <script src="./analytics.js"></script>
   <script>
-    const publicCard='https://consult.misoliquor.co.kr/card-pro/?share=official-logo';
+    const publicCard='https://consult.misoliquor.co.kr/card-pro/?share=official-logo-v2';
     function shareData(){return{title:'박상욱 대표 | 주식회사 미소주류',text:'주식회사 미소주류 박상욱 대표입니다.\n술만 공급하지 않습니다. 사장님의 장사를 함께 봅니다.',url:publicCard}}
     async function shareCard(){const d=shareData();if(navigator.share){try{await navigator.share(d);return}catch(e){if(e&&e.name==='AbortError')return}}const body=encodeURIComponent(d.text+'\n'+d.url);window.location.href='sms:?body='+body}
     async function copyCard(){const d=shareData();await copyText(d.text+'\n'+d.url,'명함 주소를 복사했습니다.')}

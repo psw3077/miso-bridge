@@ -54,7 +54,7 @@
     const selected = getShareVariant();
     const url = new URL(location.href);
     url.searchParams.set("sv", selected);
-    url.searchParams.set("share", "official-logo");
+    url.searchParams.set("share", "official-logo-v2");
     const text = selected === "A"
       ? "주식회사 미소주류 박상욱 대표 전자명함입니다. 주류 납품·신규거래·창업상담이 필요하시면 아래에서 바로 연락주세요."
       : "매장에 맞는 주류 공급과 견적이 필요하신가요? 미소주류 박상욱 대표 전자명함에서 전화·카카오톡·신규거래 상담을 바로 이용하실 수 있습니다.";
@@ -68,15 +68,13 @@
       if (navigator.share) {
         try {
           await navigator.share({ title: "박상욱 대표 | 미소주류", text: data.text, url: data.url });
-        } catch (_) {}
-        return;
+          return;
+        } catch (error) {
+          if (error?.name === "AbortError") return;
+        }
       }
-      try {
-        await navigator.clipboard.writeText(`${data.text}\n${data.url}`);
-        alert("공유 문구와 전자명함 주소를 복사했습니다.");
-      } catch (_) {
-        prompt("아래 내용을 복사하세요.", `${data.text}\n${data.url}`);
-      }
+      const body = encodeURIComponent(`${data.text}\n${data.url}`);
+      location.href = `sms:?body=${body}`;
     };
 
     window.copyCard = async function () {
