@@ -24,5 +24,8 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
+      - name: Check card analytics syntax
+        run: node --check public/card-pro/analytics.js
+
       - name: Build
         run: npm run build
