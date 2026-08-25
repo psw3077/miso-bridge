@@ -64,12 +64,12 @@
     if (href.startsWith("tel:")) return "phone_click";
     if (href.startsWith("sms:")) return "sms_click";
     if (href.includes("kakao")) return "kakao_click";
-    if (/寃ъ쟻/.test(text)) return "quote_click";
-    if (/?곷떞|臾몄쓽|異붿쿇/.test(text)) return "consult_click";
-    if (/釉붾줈洹?.test(text) || href.includes("blog.naver")) return "blog_click";
-    if (/?곕씫泥???????.test(text)) return "contact_save";
-    if (/紐낇븿 蹂대궡湲?留곹겕 蹂듭궗|怨듭쑀/.test(text)) return "share_click";
-    if (/QR/.test(text)) return "qr_entry";
+    if (/견적/.test(text)) return "quote_click";
+    if (/상담|문의|추천/.test(text)) return "consult_click";
+    if (/블로그/.test(text) || href.includes("blog.naver")) return "blog_click";
+    if (/연락처.*저장|저장.*연락처/.test(text)) return "contact_save";
+    if (/명함 보내기|링크 복사|공유/.test(text)) return "share_click";
+    if (/QR/i.test(text)) return "qr_entry";
     if (/^https?:/.test(href)) return "website_click";
     return null;
   }
