@@ -1,0 +1,13 @@
+.inquiry-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 13px;
+}
+
+.status-button {
+  background: var(--navy) !important;
+}
+
+.status-button:disabled {
+  opacity: .55;
+}
