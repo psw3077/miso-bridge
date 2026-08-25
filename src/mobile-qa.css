@@ -1,0 +1,14 @@
+@media (max-width: 600px) {
+  .miso-header .nav {
+    top: 68px;
+  }
+
+  .miso-header .nav.open {
+    max-height: calc(100dvh - 68px - env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
+  }
+
+  .modal-backdrop {
+    z-index: 110;
+  }
+}

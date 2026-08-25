@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Sitemap URL will be activated after the final MISO ONE domain is connected.

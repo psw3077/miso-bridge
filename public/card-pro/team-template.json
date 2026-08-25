@@ -1,0 +1,26 @@
+{
+  "company": "주식회사 미소주류",
+  "cardBaseUrl": "https://psw3077.github.io/miso-bridge/card-pro/",
+  "members": [
+    {
+      "slug": "parksanguk",
+      "name": "박상욱",
+      "title": "대표",
+      "phone": "031-336-3077",
+      "email": "miso3077@naver.com",
+      "kakao": "http://pf.kakao.com/_xnaXJn",
+      "homepage": "https://misoliquor.co.kr/",
+      "blog": "https://blog.naver.com/saga9292",
+      "region": "대표 상담",
+      "enabled": true
+    }
+  ],
+  "futureFields": [
+    "mobilePhone",
+    "salesRegion",
+    "employeePhoto",
+    "employeeCode",
+    "smileShotBizUrl",
+    "leadSourceCode"
+  ]
+}

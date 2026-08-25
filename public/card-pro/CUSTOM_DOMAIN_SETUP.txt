@@ -1,0 +1,6 @@
+card.misoliquor.co.kr 전용 연결 기준
+
+1) GitHub Pages Custom domain: card.misoliquor.co.kr
+2) DNS CNAME: card -> psw3077.github.io
+3) 이 저장소 루트는 MISO ONE이므로 index.html에서 card.misoliquor.co.kr 접속을 /card-pro/로 자동 이동 처리
+4) HTTPS 활성화 후 카카오 공유 테스트
