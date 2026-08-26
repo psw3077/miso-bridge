@@ -5,6 +5,7 @@ import MisoAdmin from "./MisoAdmin";
 import "./styles.css";
 import "./v2.css";
 import "./growth.css";
+import "./magazine-home.css";
 
 const isAdminPage = new URLSearchParams(window.location.search).get("admin") === "1";
 
