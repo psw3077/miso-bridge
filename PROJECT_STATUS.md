@@ -22,7 +22,7 @@
 ## 확정 연결
 - 대표전화: `031-336-3077`
 - 전화 링크: `tel:0313363077`
-- 네이버 블로그: `https://blog.naver.com/saga9292`
+- 네이버 블로그: `https://blog.naver.com/misojooryu`
 - 인스타그램: `https://www.instagram.com/misojooryu/`
 - 카카오채널: `http://pf.kakao.com/_xnaXJn`
 - 페이스북: `https://www.facebook.com/100069034002808`

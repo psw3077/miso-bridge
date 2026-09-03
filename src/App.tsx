@@ -28,7 +28,7 @@ type Notice = { type: "ok" | "error"; text: string } | null;
 const links = {
   imweb: "https://miso73590.imweb.me/",
   kakao: "http://pf.kakao.com/_xnaXJn",
-  blog: "https://blog.naver.com/saga9292",
+  blog: "https://blog.naver.com/misojooryu",
   instagram: "https://www.instagram.com/misojooryu/",
   facebook: "https://www.facebook.com/100069034002808",
 };

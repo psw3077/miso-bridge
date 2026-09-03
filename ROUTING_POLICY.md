@@ -5,7 +5,7 @@
 - 위 사이트의 디자인·레이아웃·콘텐츠는 그대로 유지한다. 다른 홈페이지나 기존 GitHub Pages 화면으로 대체하지 않는다.
 - 대표 도메인: `misoliquor.co.kr`
 - 아임웹: `https://miso73590.imweb.me/` — 주류 검색·상품관 기능에만 사용한다.
-- 아임웹에서 찾는 주류가 없을 경우 미소주류 네이버 블로그 `https://blog.naver.com/saga9292`의 검색/콘텐츠로 연결한다.
+- 아임웹에서 찾는 주류가 없을 경우 미소주류 네이버 블로그 `https://blog.naver.com/misojooryu`의 검색/콘텐츠로 연결한다.
 
 ## 운영 원칙
 - 메인 홈페이지는 `miso-liquor-preview.psw3077.chatgpt.site`의 현재 화면을 그대로 독립호스팅한다.

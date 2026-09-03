@@ -35,7 +35,7 @@ for (const product of products) {
   fs.mkdirSync(dir, { recursive: true });
   const canonical = `${siteUrl}/products/${product.id}/`;
   const searchUrl = `${siteUrl}/?product=${encodeURIComponent(product.id)}#liquor-search`;
-  const blogUrl = `https://blog.naver.com/saga9292/PostSearchList.naver?SearchText=${encodeURIComponent(product.name)}`;
+  const blogUrl = `https://blog.naver.com/misojooryu/PostSearchList.naver?SearchText=${encodeURIComponent(product.name)}`;
   const imageUrl = `${siteUrl}/product-images/${product.id}.webp`;
   const title = `${product.name} 도매·업소용 공급 | 미소주류`;
   const description = `${product.name} ${product.category} 업소용 공급·견적 상담. ${product.description} 미소주류 031-336-3077.`;
