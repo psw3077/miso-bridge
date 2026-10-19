@@ -55,7 +55,7 @@
     .headline{margin:35px 0 0;padding-top:27px;border-top:1px solid rgba(255,255,255,.14);font-size:29px;line-height:1.43;font-weight:790;letter-spacing:-1.3px}
     .headline em{color:var(--gold-soft);font-style:normal}
     .hero-note{margin:12px 0 0;max-width:460px;font-size:12px;line-height:1.7;color:rgba(255,255,255,.57)}
-    .quick-actions{position:relative;margin:-1px 0 0;padding:20px 25px 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px;background:#fff}
+    .quick-actions{position:relative;margin:-1px 0 0;padding:20px 25px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;background:#fff}
     .action{min-height:62px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:0 15px;font-size:12px;font-weight:780;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
     .action small{display:block;margin-top:5px;font-size:9px;font-weight:600;color:var(--muted)}
     .action.call{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 10px 22px rgba(7,26,56,.15)}
@@ -107,7 +107,7 @@
     .dock a,.dock button{border:0;background:transparent;color:#354154;text-decoration:none;font:inherit;font-size:9px;font-weight:760;display:grid;place-items:center;gap:4px;cursor:pointer}
     .dock i{display:grid;place-items:center;width:29px;height:29px;border-radius:10px;background:#f0f3f6;color:var(--navy);font-style:normal;font-size:14px}
     .dock .primary i{background:var(--navy);color:var(--gold-soft)}
-    @media(max-width:430px){.masthead{padding-left:20px;padding-right:20px}.identity{grid-template-columns:136px 1fr;gap:19px}.portrait{width:136px;height:174px}.name{font-size:36px}.headline{font-size:25px}.quick-actions{padding-left:20px;padding-right:20px;grid-template-columns:1fr 1fr}.trust{margin-left:20px;margin-right:20px}.brand-visual{min-height:390px}.brand-visual img{object-position:64% center}.brand-visual:after{background:linear-gradient(90deg,rgba(4,17,37,.96) 0%,rgba(4,17,37,.81) 48%,rgba(4,17,37,.2) 100%)}.brand-story{padding-left:20px;padding-right:20px;max-width:330px}.brand-story strong{font-size:23px}.section{padding-left:20px;padding-right:20px}.channels{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:430px){.masthead{padding-left:20px;padding-right:20px}.identity{grid-template-columns:136px 1fr;gap:19px}.portrait{width:136px;height:174px}.name{font-size:36px}.headline{font-size:25px}.quick-actions{padding-left:20px;padding-right:20px;grid-template-columns:repeat(3,1fr)}.trust{margin-left:20px;margin-right:20px}.brand-visual{min-height:390px}.brand-visual img{object-position:64% center}.brand-visual:after{background:linear-gradient(90deg,rgba(4,17,37,.96) 0%,rgba(4,17,37,.81) 48%,rgba(4,17,37,.2) 100%)}.brand-story{padding-left:20px;padding-right:20px;max-width:330px}.brand-story strong{font-size:23px}.section{padding-left:20px;padding-right:20px}.channels{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:350px){.identity{grid-template-columns:118px 1fr}.portrait{width:118px;height:154px}.name{font-size:32px}.headline{font-size:23px}.action{padding-left:12px}.trust{padding-left:3px;padding-right:3px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.action,.channel{transition:none}}
   </style>
@@ -132,7 +132,7 @@
 
     <section class="quick-actions" aria-label="빠른 연락">
       <a class="action call" data-card-event="phone_click" href="tel:01077103077">대표 직통<small>010-7710-3077</small></a>
-      <a class="action kakao" data-card-event="kakao_click" href="http://pf.kakao.com/_xnaXJn/chat">카카오톡<small>바로 상담하기</small></a>
+      <a class="action kakao" data-card-event="kakao_click" href="https://pf.kakao.com/_xnaXJn/chat">카카오톡<small>바로 상담하기</small></a>
       <button class="action" type="button" data-card-event="contact_save" onclick="saveVCard()">연락처 저장<small>휴대폰에 저장</small></button>
     </section>
 
@@ -170,7 +170,7 @@
     <footer class="footer"><b>주식회사 미소주류</b>경기도 용인시 처인구 모현읍 곡현로718번길 27, B동</footer>
   </main>
 
-  <nav class="dock" aria-label="고정 빠른 메뉴"><a class="primary" data-card-event="phone_click" href="tel:01077103077"><i aria-hidden="true">☎</i>대표 직통</a><a data-card-event="kakao_click" href="http://pf.kakao.com/_xnaXJn/chat"><i aria-hidden="true">K</i>카카오톡</a><a data-card-event="consult_click" href="https://consult.misoliquor.co.kr/new-partner?source_card=park-sangwook&amp;source_staff=%EB%B0%95%EC%83%81%EC%9A%B1"><i aria-hidden="true">＋</i>신규거래</a><button type="button" data-card-event="share_click" onclick="shareCard()"><i aria-hidden="true">↗</i>명함 보내기</button></nav>
+  <nav class="dock" aria-label="고정 빠른 메뉴"><a class="primary" data-card-event="phone_click" href="tel:01077103077"><i aria-hidden="true">☎</i>대표 직통</a><a data-card-event="kakao_click" href="https://pf.kakao.com/_xnaXJn/chat"><i aria-hidden="true">K</i>카카오톡</a><a data-card-event="consult_click" href="https://consult.misoliquor.co.kr/new-partner?source_card=park-sangwook&amp;source_staff=%EB%B0%95%EC%83%81%EC%9A%B1"><i aria-hidden="true">＋</i>신규거래</a><button type="button" data-card-event="share_click" onclick="shareCard()"><i aria-hidden="true">↗</i>명함 보내기</button></nav>
   <script src="/card-analytics.js" data-card-id="miso_park_sangwook"></script>
   <script>
     const publicCard='https://consult.misoliquor.co.kr/card-pro/?share=official-logo-v2';
